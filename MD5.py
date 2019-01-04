@@ -1,101 +1,102 @@
 import math
-import struct
-import numpy
-from bitarray import bitarray
 
-# sine table
-T = [64]
+rotate_amounts = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+                  5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
+                  4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+                  6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21] 
 
-# MD5 Buffers
-WORD_A = [0x01, 0x23, 0x45, 0x67]
-WORD_B = [0x89, 0xab, 0xcd, 0xef]
-WORD_C = [0xfe, 0xdc, 0xba, 0x98]
-WORD_D = [0x76, 0x54, 0x32, 0x10]
+# auxillary functions
+def F(X, Y, Z):
+    return (X & Y) | (~X & Z)
 
-def BfferBArray(A):
-    # Given a 4x8 bit hex value A 
-    # - format to a 32bit bitstring
-    b = bitarray()
-    for byte in A:
-        b.extend('{0:08b}'.format(byte))
-    return b
+def G(X, Y, Z):
+    return (X & Z) | (Y & ~Z)
 
+def H(X, Y, Z):
+    return X ^ Y ^ Z
 
-s = [   7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22, 
-        5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
-        4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
-        6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21 ]
+def I(X, Y, Z):
+    return Y ^ (X | ~Z)
+    
+# bitshift left
+def leftrotate(b, n):
+    b &= 0xFFFFFFFF
+    return ((b << n) | (b >> (32 - n))) & 0xFFFFFFFF    
+    
+def toHex(digest):
+    raw = digest.to_bytes(16, byteorder='little')
+    return '{:032x}'.format(int.from_bytes(raw, byteorder='big'))
 
-def leftshift(b, n):
-    return b[n:] + (bitarray('0') * n)
+# sine const
+T = [int(abs(math.sin(i+1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
 
-string = "Hello world"
+# md5 buffers
+#a0 = 0x67452301   
+#b0 = 0xefcdab89   
+#c0 = 0x98badcfe   
+#d0 = 0x10325476   
 
-bArray = ''.join(format(ord(x), 'b') for x in string)
-bArray = bitarray(bArray)
+message = "fuck fuck fuck"
 
+def MD5(msg):
+    # md5 buffers
+    a0 = 0x67452301   
+    b0 = 0xefcdab89   
+    c0 = 0x98badcfe   
+    d0 = 0x10325476   
 
-######### pad message ############
-bArray.append(True)
-while bArray.length() % 512 != 448:
-    bArray.append(0)
+    msg = bytearray(msg)
+    length = (8 * len(msg)) & 0xFFFFFFFFFFFFFFFF
+    msg.append(0x80)
 
-# len is 448. - append 64 bit length of original message
-lengthbits = "{0:b}".format(len(string))
-b = bitarray(lengthbits)
+    while len(msg) % 512 != 448: msg.append(0)
 
-while b.length() < 64:
-    b.append(0)
+    msg += length.to_bytes(8, byteorder='little')
 
-for bit in b:
-    bArray.append(bit)
+    # for each 32 bit word
+    for j in range(0, len(msg), 64):
+        chunk = msg[j : j + 64]
 
+        A = a0
+        B = b0
+        C = c0
+        D = d0
 
-
-######## Process Block ########
-
-# construct sine table
-for i in range(63):
-    T.append(abs(math.sin(i+1)) * 2**32)
-
-# copy block i into X
-for j in range(16):
-    # one of 16 32 bit words in the block
-    X = bitarray()
-    for x in range(16): 
-        X.append(bArray[j * 16 + x]) 
+        # main loop
+        for i in range(64):
+            if 0 <= i and i <= 15:
+                f = F(B, C, D)
+                g = i
+            if 16 <= i and i <= 31:
+                f = G(B, C, D)
+                g = (5 * i + 1) % 16
+            if 32 <= i and i <= 47:
+                f = H(B, C, D)
+                g = (3 * i + 5) % 16
+            if 48 <= i and i <= 63:
+                f = I(B, C, D)
+                g = (7 * i) % 16
+            rota = A + f + T[i] + int.from_bytes(chunk[4*g:4*g+4], byteorder='little')
+            bb = (B + leftrotate(rota, rotate_amounts[i])) & 0xFFFFFFFF
+            A = D
+            D = C
+            C = B
+            B = bb
         
+        a0 = (a0 + A) & 0xFFFFFFFF
+        b0 = (b0 + B) & 0xFFFFFFFF
+        c0 = (c0 + C) & 0xFFFFFFFF
+        d0 = (d0 + D) & 0xFFFFFFFF           
 
-    # copy buffers
-    A = BfferBArray(WORD_A)
-    B = BfferBArray(WORD_B)
-    C = BfferBArray(WORD_C)
-    D = BfferBArray(WORD_D)
-
-
-
-    # main loop
-    for  i in range(64):
-        f = 0
-        g = 0       
-
-        if 0 <= i and i <= 15:
-            f += (B & C) | (D & ~B)
-            g += i
-        elif 16 <= i and i <= 31:
-            f += (D & B) | (~D & C)
-            g += (5 * i + 1) % 16
-        elif 32 <= i and i <= 47:
-            f += B ^ C ^ D
-            g += (3 * i + 5) % 16
-        elif 48 <= i and i <= 63:
-            f += C ^ (B | ~D)
-            g += (7 * i) % 16
-        
-        f = f + A + T[i] + bArray[g]
-        A = D
-        D = C
-        C = B
-        B = B + leftshift(f, s[i])
+    digest = str(a0) + str(b0) + str(c0) + str(d0)
+    return digest
 
 
+result = b"abc"
+
+digest = MD5(result)
+#digest = toHex(digest)
+
+
+
+print(digest)

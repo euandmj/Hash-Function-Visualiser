@@ -26,6 +26,8 @@ def I(X, Y, Z):
 
 # sine table
 T = [64]
+# sine table in binary
+Tb = [64]
 
 # MD5 Buffers
 WORD_A = [0x01, 0x23, 0x45, 0x67]
@@ -51,30 +53,25 @@ def Round1(A, B, C, D, X, T):
         # abcd = 32 bit strings
         # make X[k] and T[i] equal 32 bit strings too
         x = '{0:032b}'.format(X[k]) # format to 32bit string.
-        t = ''.join(bin(ord(c)).replace('0b', '').rjust(8, '0') for c in struct.pack('!f', T[i])) # 32 bit formatted float
+        #t = ''.join(bin(ord(c)).replace('0b', '').rjust(8, '0') for c in struct.pack('!f', T[i])) # 32 bit formatted float
+        t = Tb[i]
 
         # parse to bitarrays
         xb = bitarray(str(x))
         tb = bitarray(str(t))
         f = F(b,c,d)
 
-
-        val = bin_add(bitarray_toString(a), bitarray_toString(f), bitarray_toString(xb), bitarray_toString(tb))
+        val = bin_add(bitarray_toString(a), bitarray_toString(f), bitarray_toString(xb), t)
+        x = len(val)
         val = bin_add(bitarray_toString(b), val)
-
-
-        
-
-
-
-
-        
+        x = len(val)
+        val = leftshift(bitarray(val), s)    
+        x = len(val)
         #value = b & ((a & F(b,c,d) & xb & tb)) # value always turns false
-        #val = bin(int(b, 2)) + ((bin(int(a,2)) + bin(int(F(b,c,d), 2)) + bin(int(X[k], 2)) + bin(int(T[i], 2))) << s)#
-            
-        val = bin(int(b.tostring(), 2)) + bin(int(a.tostring(), 2)) % 2**32
+        #val = bin(int(b, 2)) + ((bin(int(a,2)) + bin(int(F(b,c,d), 2)) + bin(int(X[k], 2)) + bin(int(T[i], 2))) << s)            
         
-        return value
+        #val = bin(int(b.tostring(), 2)) + bin(int(a.tostring(), 2)) % 2**32
+        return val        
     
     A = Logic(A, B, C, D, 0, 7, 1)
     D = Logic(D, A, B, C, 1, 12, 2)
@@ -135,6 +132,7 @@ while bArray.length() % 512 != 448:
 lengthbits = "{0:b}".format(len(string))
 b = bitarray(lengthbits)
 
+
 while b.length() < 64:
     b.append(0)
 
@@ -148,6 +146,10 @@ for bit in b:
 # construct sine table
 for i in range(63):
     T.append(abs(math.sin(i+1)) * 2**32)
+
+# read in binary sin table
+with open('sin.txt') as fp:
+    Tb = [l.rstrip('\n') for l in fp]
 
 # copy block i into X
 for j in range(16):
