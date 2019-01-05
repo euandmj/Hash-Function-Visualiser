@@ -57,6 +57,7 @@ if __name__=='__main__':
     demo = [b"", b"a", b"abc", b"message digest", b"abcdefghijklmnopqrstuvwxyz",
             b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
             b"12345678901234567890123456789012345678901234567890123456789012345678901234567890"]
+    xx = md5(b"abc")
     for message in demo:
         print(md5_to_hex(md5(message)),' <= "',message.decode('ascii'),'"', sep='')
  

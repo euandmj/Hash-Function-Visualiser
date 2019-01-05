@@ -26,6 +26,10 @@ def leftrotate(b, n):
 def toHex(digest):
     raw = digest.to_bytes(16, byteorder='little')
     return '{:032x}'.format(int.from_bytes(raw, byteorder='big'))
+   
+def computeDigest(*buffers):
+    #return sum(x << (32 * i)) for i, x in enumerate(buffers)[2:]
+    return 2    
 
 # sine const
 T = [int(abs(math.sin(i+1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
@@ -86,10 +90,9 @@ def MD5(msg):
         a0 = (a0 + A) & 0xFFFFFFFF
         b0 = (b0 + B) & 0xFFFFFFFF
         c0 = (c0 + C) & 0xFFFFFFFF
-        d0 = (d0 + D) & 0xFFFFFFFF           
+        d0 = (d0 + D) & 0xFFFFFFFF       
+    return a0   
 
-    digest = str(a0) + str(b0) + str(c0) + str(d0)
-    return digest
 
 
 result = b"abc"
