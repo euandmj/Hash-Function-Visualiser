@@ -1,4 +1,6 @@
 import math
+import os
+import psutil
 
 rotate_amounts = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
                   5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
@@ -38,16 +40,18 @@ T = [int(abs(math.sin(i+1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
 #a0 = 0x67452301   
 #b0 = 0xefcdab89   
 #c0 = 0x98badcfe   
-#d0 = 0x10325476   
-
-message = "fuck fuck fuck"
+#d0 = 0x10325476  
 
 def MD5(msg):
     # md5 buffers
+    # moved into function due to 
+    # weird runtime error of variable usage before initialisation 
     a0 = 0x67452301   
     b0 = 0xefcdab89   
     c0 = 0x98badcfe   
     d0 = 0x10325476   
+
+    count = 0
 
     msg = bytearray(msg)
     length = (8 * len(msg)) & 0xFFFFFFFFFFFFFFFF
@@ -68,6 +72,7 @@ def MD5(msg):
 
         # main loop
         for i in range(64):
+            count += 1
             if 0 <= i and i <= 15:
                 f = F(B, C, D)
                 g = i
@@ -86,20 +91,22 @@ def MD5(msg):
             D = C
             C = B
             B = bb
-        
+                
         a0 = (a0 + A) & 0xFFFFFFFF
         b0 = (b0 + B) & 0xFFFFFFFF
         c0 = (c0 + C) & 0xFFFFFFFF
-        d0 = (d0 + D) & 0xFFFFFFFF       
-    return a0   
+        d0 = (d0 + D) & 0xFFFFFFFF      
+
+    print("finished with %s loops" % (count))
+    return sum(val << (32 * i) for i, val in enumerate([a0, b0, c0, d0]))
 
 
 
 result = b"abc"
-
 digest = MD5(result)
-#digest = toHex(digest)
+#print(digest)
+print(toHex(digest))
 
 
-
-print(digest)
+process = psutil.Process(os.getpid())
+print(process.memory_info().rss)

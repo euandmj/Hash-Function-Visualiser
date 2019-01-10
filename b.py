@@ -46,7 +46,8 @@ def md5(message):
         for i, val in enumerate([a, b, c, d]):
             hash_pieces[i] += val
             hash_pieces[i] &= 0xFFFFFFFF
- 
+    
+    
     return sum(x<<(32*i) for i, x in enumerate(hash_pieces))
  
 def md5_to_hex(digest):
@@ -54,10 +55,12 @@ def md5_to_hex(digest):
     return '{:032x}'.format(int.from_bytes(raw, byteorder='big'))
  
 if __name__=='__main__':
-    demo = [b"", b"a", b"abc", b"message digest", b"abcdefghijklmnopqrstuvwxyz",
-            b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-            b"12345678901234567890123456789012345678901234567890123456789012345678901234567890"]
+    #demo = [b"a", b"a", b"abc", b"message digest", b"abcdefghijklmnopqrstuvwxyz",
+     #       b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+     #       b"12345678901234567890123456789012345678901234567890123456789012345678901234567890"]
     xx = md5(b"abc")
-    for message in demo:
-        print(md5_to_hex(md5(message)),' <= "',message.decode('ascii'),'"', sep='')
+    print(xx) 
+    print(md5_to_hex(xx))
+   # for message in demo:
+   #     print(md5_to_hex(md5(message)),' <= "',message.decode('ascii'),'"', sep='')
  
