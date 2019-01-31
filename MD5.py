@@ -55,7 +55,7 @@ def MD5(msg):
 
     msg = bytearray(msg)
     length = (8 * len(msg)) & 0xFFFFFFFFFFFFFFFF
-    msg.append(0x80)
+    msg.append(128)
 
     while len(msg) % 512 != 448: msg.append(0)
 
@@ -109,4 +109,4 @@ print(toHex(digest))
 
 
 process = psutil.Process(os.getpid())
-print(process.memory_info().rss)
+print("Memory used %sMB" % (process.memory_info().rss / 1000000))
