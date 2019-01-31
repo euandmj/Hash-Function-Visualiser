@@ -1,5 +1,4 @@
 import sys
-from PyQt5.QtWidgets import QDialog, QApplication
 from PyQt5 import QtWidgets
 from window import Ui_MainWindow
 import MD5
@@ -14,6 +13,7 @@ class AppWindow(QDialog):
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
 ui = Ui_MainWindow()
+
 
 
 

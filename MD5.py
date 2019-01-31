@@ -55,7 +55,8 @@ def MD5(msg):
 
     msg = bytearray(msg)
     length = (8 * len(msg)) & 0xFFFFFFFFFFFFFFFF
-    msg.append(128)
+    # add 128
+    msg.append(0x80)
 
     while len(msg) % 512 != 448: msg.append(0)
 
@@ -99,7 +100,6 @@ def MD5(msg):
 
     print("finished with %s loops" % (count))
     return sum(val << (32 * i) for i, val in enumerate([a0, b0, c0, d0]))
-
 
 
 result = b"abc"
