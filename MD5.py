@@ -1,6 +1,7 @@
 import math
 import os
 import psutil
+import json
 
 rotate_amounts = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
                   5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
@@ -23,7 +24,7 @@ def I(X, Y, Z):
 # bitshift left
 def leftrotate(b, n):
     b &= 0xFFFFFFFF
-    return ((b << n) | (b >> (32 - n))) & 0xFFFFFFFF    
+    return ((b << n) | (b >> (32 - n))) & 0xFFFFFFFF
     
 def toHex(digest):
     raw = digest.to_bytes(16, byteorder='little')
@@ -33,23 +34,33 @@ def computeDigest(*buffers):
     #return sum(x << (32 * i)) for i, x in enumerate(buffers)[2:]
     return 2    
 
-# sine const
-T = [int(abs(math.sin(i+1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
+def writeJsonFile(data):
+    import mpu.io
+    out = mpu.io.write('loop.json', data)
 
+# sine constants
+T = [int(abs(math.sin(i+1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
 # md5 buffers
 #a0 = 0x67452301   
 #b0 = 0xefcdab89   
 #c0 = 0x98badcfe   
 #d0 = 0x10325476  
 
-def MD5(msg):
+
+json_data = []
+
+
+def MD5(msg, plaintext):
     # md5 buffers
     # moved into function due to 
     # weird runtime error of variable usage before initialisation 
-    a0 = 0x67452301   
-    b0 = 0xefcdab89   
-    c0 = 0x98badcfe   
-    d0 = 0x10325476   
+    a0 = 0x67452301
+    b0 = 0xefcdab89
+    c0 = 0x98badcfe
+    d0 = 0x10325476
+
+  
+
 
     count = 0
 
@@ -61,6 +72,12 @@ def MD5(msg):
     while len(msg) % 512 != 448: msg.append(0)
 
     msg += length.to_bytes(8, byteorder='little')
+
+    json_data.append({
+        "Message": plaintext,
+        "Block": str(msg)
+    })
+
 
     # for each 32 bit word
     for j in range(0, len(msg), 64):
@@ -86,27 +103,46 @@ def MD5(msg):
             if 48 <= i and i <= 63:
                 f = I(B, C, D)
                 g = (7 * i) % 16
+            #calc rotatory             
             rota = A + f + T[i] + int.from_bytes(chunk[4*g:4*g+4], byteorder='little')
             bb = (B + leftrotate(rota, rotate_amounts[i])) & 0xFFFFFFFF
             A = D
             D = C
             C = B
             B = bb
+
+            # construct json file
+            data = {
+                "Loop": {
+                    "Id": count,
+                    "Buffers": [A, B, C, D],
+                    "Rotate": rotate_amounts[i],
+                    "Rotate Binary": rota,
+                    "f": f,
+                    "g": g,
+                    "T": T[i],
+                }
+            }
+            json_data.append(data)
+
+
                 
         a0 = (a0 + A) & 0xFFFFFFFF
         b0 = (b0 + B) & 0xFFFFFFFF
         c0 = (c0 + C) & 0xFFFFFFFF
-        d0 = (d0 + D) & 0xFFFFFFFF      
-
+        d0 = (d0 + D) & 0xFFFFFFFF
+        
     print("finished with %s loops" % (count))
+    writeJsonFile(json_data)
     return sum(val << (32 * i) for i, val in enumerate([a0, b0, c0, d0]))
 
 
-result = b"abc"
-digest = MD5(result)
-#print(digest)
-print(toHex(digest))
+if __name__ == "__main__":
+    result = b"abc"
+    digest = MD5(result, "abc")
+    #print(digest)
+    print(toHex(digest))
 
 
-process = psutil.Process(os.getpid())
-print("Memory used %sMB" % (process.memory_info().rss / 1000000))
+    process = psutil.Process(os.getpid())
+    print("Memory used %sMB" % (process.memory_info().rss / 1000000))

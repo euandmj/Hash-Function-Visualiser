@@ -12,8 +12,14 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(640, 500)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+        MainWindow.setSizePolicy(sizePolicy)
         MainWindow.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setEnabled(True)
         self.centralwidget.setObjectName("centralwidget")
         self.hashButton = QtWidgets.QPushButton(self.centralwidget)
         self.hashButton.setGeometry(QtCore.QRect(380, 10, 51, 20))
@@ -104,6 +110,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(8)
         self.outputText.setFont(font)
+        self.outputText.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.outputText.setReadOnly(True)
         self.outputText.setObjectName("outputText")
         self.label_9 = QtWidgets.QLabel(self.groupBox_2)
@@ -183,7 +190,7 @@ class Ui_MainWindow(object):
         self.lineEdit_5.setObjectName("lineEdit_5")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 640, 18))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 640, 17))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -219,7 +226,13 @@ class Ui_MainWindow(object):
         self.loopCountLabel.setText(_translate("MainWindow", "Loop Count : "))
         self.label_10.setText(_translate("MainWindow", "b0"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
-
+   
+    def OutputHash(self):
+        import MD5
+        msg = str(self.hashInput.text())
+        h = bytes(msg, encoding='utf-8')
+        hash = MD5.MD5(h, msg)
+        self.outputText.setText(str(hash))
 
 if __name__ == "__main__":
     import sys
