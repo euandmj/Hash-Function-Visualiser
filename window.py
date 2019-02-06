@@ -227,13 +227,6 @@ class Ui_MainWindow(object):
         self.label_10.setText(_translate("MainWindow", "b0"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
    
-    def OutputHash(self):
-        import MD5
-        msg = str(self.hashInput.text())
-        h = bytes(msg, encoding='utf-8')
-        hash = MD5.MD5(h, msg)
-        self.outputText.setText(str(hash))
-
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)

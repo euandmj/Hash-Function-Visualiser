@@ -1,33 +1,29 @@
 import sys
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QApplication
 from PyQt5 import QtWidgets
 from window import Ui_MainWindow
-import MD5
 
-class AppWindow(QDialog):
+class AppWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setFixedSize(640, 500)
+        self.init_Connections()
         self.show()
 
- #def OutputHash(self):
- #       import MD5
-
- #       h = MD5.MD5(b"abc")
- #       self.outputText.setText(str(h))
+    def init_Connections(self):
+        self.ui.hashButton.clicked.connect(self.hashButton_Clicked)
+        
+    def hashButton_Clicked(self):
+        import MD5
+        txt = str(self.ui.hashInput.text())
+        h = MD5.MD5(txt)
+        self.ui.outputText.setText(str(hex(h)))
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    MainWindow.setFixedSize(640, 500)
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-
-
-    # Modify runtime values here
-    ui.hashButton.clicked.connect(ui.OutputHash)
-    # do all modification to the ui file before .show
-    MainWindow.show()
+    app = QApplication(sys.argv)
+    window = AppWindow()
+    window.show()
     sys.exit(app.exec_())

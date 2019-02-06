@@ -50,7 +50,7 @@ T = [int(abs(math.sin(i+1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
 json_data = []
 
 
-def MD5(msg, plaintext):
+def MD5(msg):
     # md5 buffers
     # moved into function due to 
     # weird runtime error of variable usage before initialisation 
@@ -58,12 +58,15 @@ def MD5(msg, plaintext):
     b0 = 0xefcdab89
     c0 = 0x98badcfe
     d0 = 0x10325476
-
+    plaintext = msg
   
 
 
     count = 0
 
+    #convert string to bytearray
+    #add some check for utf vs ascii 
+    msg = bytes(msg, encoding="utf-8")
     msg = bytearray(msg)
     length = (8 * len(msg)) & 0xFFFFFFFFFFFFFFFF
     # add 128
@@ -139,7 +142,7 @@ def MD5(msg, plaintext):
 
 if __name__ == "__main__":
     result = b"abc"
-    digest = MD5(result, "abc")
+    digest = MD5(result)
     #print(digest)
     print(toHex(digest))
 
