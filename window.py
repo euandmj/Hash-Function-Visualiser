@@ -37,6 +37,8 @@ class Ui_MainWindow(object):
         self.hashCombo.setMaxVisibleItems(5)
         self.hashCombo.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLength)
         self.hashCombo.setObjectName("hashCombo")
+        self.hashCombo.addItem("")
+        self.hashCombo.addItem("")
         self.inputBinaryText = QtWidgets.QLineEdit(self.centralwidget)
         self.inputBinaryText.setGeometry(QtCore.QRect(210, 60, 221, 20))
         self.inputBinaryText.setReadOnly(True)
@@ -201,7 +203,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.hashCombo.setCurrentIndex(-1)
+        self.hashCombo.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -209,6 +211,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.hashButton.setText(_translate("MainWindow", "Hash"))
         self.hashInput.setPlaceholderText(_translate("MainWindow", "Enter Input to be Hashed"))
+        self.hashCombo.setItemText(0, _translate("MainWindow", "MD5"))
+        self.hashCombo.setItemText(1, _translate("MainWindow", "SHA-1"))
         self.loopCountLabel_4.setText(_translate("MainWindow", "Binary Representation"))
         self.groupBox.setTitle(_translate("MainWindow", "Constants"))
         self.label_4.setText(_translate("MainWindow", "Word Size"))
@@ -226,7 +230,8 @@ class Ui_MainWindow(object):
         self.loopCountLabel.setText(_translate("MainWindow", "Loop Count : "))
         self.label_10.setText(_translate("MainWindow", "b0"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
-   
+
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -235,3 +240,4 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
