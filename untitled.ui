@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>500</height>
+    <width>660</width>
+    <height>620</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -77,7 +77,7 @@
      <bool>false</bool>
     </property>
     <property name="currentIndex">
-     <number>-1</number>
+     <number>0</number>
     </property>
     <property name="maxVisibleItems">
      <number>5</number>
@@ -85,6 +85,16 @@
     <property name="sizeAdjustPolicy">
      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
     </property>
+    <item>
+     <property name="text">
+      <string>MD5</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>SHA-1</string>
+     </property>
+    </item>
    </widget>
    <widget class="QLineEdit" name="inputBinaryText">
     <property name="geometry">
@@ -238,25 +248,6 @@
     <property name="title">
      <string>Main Loop</string>
     </property>
-    <widget class="QLabel" name="loopCountLabel_3">
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>220</y>
-       <width>71</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Output</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_14">
      <property name="geometry">
       <rect>
@@ -275,27 +266,6 @@
      </property>
      <property name="text">
       <string>g</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="outputText">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>200</y>
-       <width>361</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>8</pointsize>
-      </font>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
      </property>
     </widget>
     <widget class="QLabel" name="label_9">
@@ -329,7 +299,7 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit">
+    <widget class="QLineEdit" name="aBufferVal">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -360,7 +330,7 @@
       <string>c0</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_6">
+    <widget class="QLineEdit" name="gBufferVal">
      <property name="geometry">
       <rect>
        <x>220</x>
@@ -391,7 +361,7 @@
       <string>d0</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_4">
+    <widget class="QLineEdit" name="dBufferVal">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -442,7 +412,7 @@
       <string>Current Word</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_2">
+    <widget class="QLineEdit" name="bBufferVal">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -460,7 +430,7 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_3">
+    <widget class="QLineEdit" name="cBufferVal">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -504,7 +474,7 @@
       <string>b0</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_5">
+    <widget class="QLineEdit" name="fBufferVal">
      <property name="geometry">
       <rect>
        <x>220</x>
@@ -522,6 +492,71 @@
       <bool>true</bool>
      </property>
     </widget>
+    <widget class="QSlider" name="progressSlider">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>180</y>
+       <width>361</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>5</number>
+     </property>
+     <property name="value">
+      <number>2</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_3">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>430</y>
+      <width>591</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>Output</string>
+    </property>
+    <widget class="QLineEdit" name="outputText">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>30</y>
+       <width>391</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -529,7 +564,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>640</width>
+     <width>660</width>
      <height>17</height>
     </rect>
    </property>
