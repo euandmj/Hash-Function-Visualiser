@@ -6,7 +6,11 @@ from window import Ui_MainWindow
 class AppWindow(QMainWindow):
     data = []
     def __init__(self):
-        super().__init__()
+        # python version calls
+        if(sys.version_info > (3, 0)):
+            super().__init__()
+        else:
+            super(AppWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setFixedSize(640, 620)
@@ -20,21 +24,31 @@ class AppWindow(QMainWindow):
     def hashButton_Clicked(self):
         import MD5
         txt = str(self.ui.hashInput.text())
+        print(txt)
         h = MD5.MD5(txt)
         self.ui.outputText.setText(MD5.toHex(h))
         
+        # clear the data struct 
+        self.data.clear()
         self.data = mpu.io.read("loop.json")
+    
+        self.ui.blockText.clear()
+        self.ui.blockText.setText(self.data[0]["Block"])
+        
 
-        self.ui.blockText.setText(str(self.data[0]["Block"]))
 
-        self.ui.progressSlider.setMaximum(len(self.data) - 1)
+        self.ui.progressSlider.setMaximum(len(self.data) - 2)
 
     def progressSlider_Changed(self):
+        print(self.ui.progressSlider.value())
         current = self.data[self.ui.progressSlider.value() + 1]
-        
+
         buffers = current["Loop"]["Buffers"]
         f = current["Loop"]["f"]
         g = current["Loop"]["g"] 
+        id = current["Loop"]["Id"]
+
+        print(id)
         
         # update the ui 
         self.ui.aBufferVal.setText(str(buffers[0]))
@@ -43,6 +57,7 @@ class AppWindow(QMainWindow):
         self.ui.dBufferVal.setText(str(buffers[3]))
         self.ui.fBufferVal.setText(str(f))
         self.ui.gBufferVal.setText(str(g))
+        self.ui.loopCountLabel.setText('Loop Count: ' + id)
     
 def pretty_print(data, indent = 1):
     import pprint
@@ -50,7 +65,7 @@ def pretty_print(data, indent = 1):
     pp.pprint(data)
 
 if __name__ == "__main__":
-    import qdarkgraystyle
+    #import qdarkgraystyle
     app = QApplication(sys.argv)
     #app.setStyleSheet(qdarkgraystyle.load_stylesheet_pyqt5())
     window = AppWindow()

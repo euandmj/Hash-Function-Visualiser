@@ -36,7 +36,11 @@ def computeDigest(*buffers):
 
 def writeJsonFile(data):
     import mpu.io
-    out = mpu.io.write('loop.json', data)
+    # attempt to fix bug of only overwriting once per program instance
+    import os
+    if(os.path.exists('loop.json')):
+        os.remove('loop.json')
+    mpu.io.write('loop.json', data)
 
 # sine constants
 T = [int(abs(math.sin(i+1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
@@ -78,7 +82,7 @@ def MD5(msg):
 
     json_data.append({
         "Message": plaintext,
-        "Block": str(msg)
+        "Block": ''.join('{:02x}'.format(b) for b in msg)
     })
 
 
