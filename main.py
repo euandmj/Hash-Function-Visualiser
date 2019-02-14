@@ -44,6 +44,7 @@ class AppWindow(QMainWindow):
         current = self.data[self.ui.progressSlider.value() + 1]
 
         buffers = current["Loop"]["Buffers"]
+        word = current["Loop"]["Word"]
         f = current["Loop"]["f"]
         g = current["Loop"]["g"] 
         id = current["Loop"]["Id"]
@@ -51,13 +52,14 @@ class AppWindow(QMainWindow):
         print(id)
         
         # update the ui 
-        self.ui.aBufferVal.setText(str(buffers[0]))
-        self.ui.bBufferVal.setText(str(buffers[1]))
-        self.ui.cBufferVal.setText(str(buffers[2]))
-        self.ui.dBufferVal.setText(str(buffers[3]))
+        self.ui.aBufferVal.setText(str(hex(buffers[0])))
+        self.ui.bBufferVal.setText(str(hex(buffers[1])))
+        self.ui.cBufferVal.setText(str(hex(buffers[2])))
+        self.ui.dBufferVal.setText(str(hex(buffers[3])))
         self.ui.fBufferVal.setText(str(f))
         self.ui.gBufferVal.setText(str(g))
-        self.ui.loopCountLabel.setText('Loop Count: ' + id)
+        self.ui.workingWordText.setText(str(word))
+        self.ui.loopCountLabel.setText('Loop Count: ' + str(id))
     
 def pretty_print(data, indent = 1):
     import pprint

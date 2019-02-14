@@ -43,7 +43,7 @@ def writeJsonFile(data):
     mpu.io.write('loop.json', data)
 
 # sine constants
-T = [int(abs(math.sin(i+1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
+T = [int(abs(math.sin(i + 1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
 # md5 buffers
 #a0 = 0x67452301   
 #b0 = 0xefcdab89   
@@ -122,9 +122,9 @@ def MD5(msg):
             data = {
                 "Loop": {
                     "Id": count,
+                    "Word": ''.join('{:02x}'.format(b) for b in chunk),
                     "Buffers": [A, B, C, D],
                     "Rotate": rotate_amounts[i],
-                    "Rotate Binary": rota,
                     "f": f,
                     "g": g,
                     "T": T[i],
@@ -145,7 +145,7 @@ def MD5(msg):
 
 
 if __name__ == "__main__":
-    result = b"abc"
+    result = "abc"
     digest = MD5(result)
     #print(digest)
     print(toHex(digest))
