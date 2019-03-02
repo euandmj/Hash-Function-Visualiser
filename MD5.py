@@ -1,7 +1,7 @@
 import math
-import os
 import psutil
 import json
+import os
 
 rotate_amounts = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
                   5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
@@ -37,7 +37,6 @@ def computeDigest(*buffers):
 def writeJsonFile(data):
     import mpu.io
     # attempt to fix bug of only overwriting once per program instance
-    import os
     if(os.path.exists('loop.json')):
         os.remove('loop.json')
     mpu.io.write('loop.json', data)
@@ -77,11 +76,9 @@ def MD5(msg):
     # add 128
     msg.append(0x80)
 
-    while len(msg) % 512 != 448: msg.append(0)
+    while len(msg) % 64 != 56: msg.append(0)
 
     msg += length.to_bytes(8, byteorder='little')
-
-    for bit in msg: print(bit, end='')
 
 
     # for each 32 bit word
@@ -137,21 +134,19 @@ def MD5(msg):
         c0 = (c0 + C) & 0xFFFFFFFF
         d0 = (d0 + D) & 0xFFFFFFFF
 
-    # append finally orignal message, padded block and the result    
-    json_data.append({
+    # append finally orignal message, padded block and the result
+    json_data.insert(0, {
         "Message": plaintext,
         "Block": ''.join('{:02x}'.format(b) for b in msg),
         "Result": toHex(sum(val << (32 * i) for i, val in enumerate([a0, b0, c0, d0])))
     })
 
-
-    print("finished with %s loops" % (count))
     writeJsonFile(json_data)
     return sum(val << (32 * i) for i, val in enumerate([a0, b0, c0, d0]))
 
 
 if __name__ == "__main__":
-    digest = MD5("vasco gramaxo")
+    digest = MD5("abc")
     print(toHex(digest))
 
 

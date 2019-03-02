@@ -33,10 +33,10 @@ class AppWindow(QMainWindow):
         self.data = mpu.io.read("loop.json")
     
         self.ui.blockText.clear()
-        self.ui.blockText.setText(self.data[len(self.data) - 1]["Block"])
+        self.ui.blockText.setText(self.data[0]["Block"])
         
 
-        self.ui.progressSlider.setMinimum(0)
+        self.ui.progressSlider.setMinimum(1)
         self.ui.progressSlider.setMaximum(len(self.data) - 1)
 
     def progressSlider_Changed(self):
