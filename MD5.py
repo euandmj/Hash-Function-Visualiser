@@ -43,7 +43,7 @@ def writeJsonFile(data):
     mpu.io.write('loop.json', data)
 
 # sine constants
-T = [int(abs(math.sin(i+1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
+T = [int(abs(math.sin(i + 1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
 # md5 buffers
 #a0 = 0x67452301   
 #b0 = 0xefcdab89   
@@ -55,6 +55,7 @@ json_data = []
 
 
 def MD5(msg):
+    assert((msg is str) == False), "The input message is not a string."
     # md5 buffers
     # moved into function due to 
     # weird runtime error of variable usage before initialisation 
@@ -80,10 +81,7 @@ def MD5(msg):
 
     msg += length.to_bytes(8, byteorder='little')
 
-    json_data.append({
-        "Message": plaintext,
-        "Block": ''.join('{:02x}'.format(b) for b in msg)
-    })
+    for bit in msg: print(bit, end='')
 
 
     # for each 32 bit word
@@ -98,16 +96,16 @@ def MD5(msg):
         # main loop
         for i in range(64):
             count += 1
-            if 0 <= i and i <= 15:
+            if 0 <= i <= 15:
                 f = F(B, C, D)
                 g = i
-            if 16 <= i and i <= 31:
+            if 16 <= i<= 31:
                 f = G(B, C, D)
                 g = (5 * i + 1) % 16
-            if 32 <= i and i <= 47:
+            if 32 <= i <= 47:
                 f = H(B, C, D)
                 g = (3 * i + 5) % 16
-            if 48 <= i and i <= 63:
+            if 48 <= i <= 63:
                 f = I(B, C, D)
                 g = (7 * i) % 16
             #calc rotatory             
@@ -122,9 +120,9 @@ def MD5(msg):
             data = {
                 "Loop": {
                     "Id": count,
+                    "Word": ''.join('{:02x}'.format(b) for b in chunk),
                     "Buffers": [A, B, C, D],
                     "Rotate": rotate_amounts[i],
-                    "Rotate Binary": rota,
                     "f": f,
                     "g": g,
                     "T": T[i],
@@ -138,16 +136,22 @@ def MD5(msg):
         b0 = (b0 + B) & 0xFFFFFFFF
         c0 = (c0 + C) & 0xFFFFFFFF
         d0 = (d0 + D) & 0xFFFFFFFF
-        
+
+    # append finally orignal message, padded block and the result    
+    json_data.append({
+        "Message": plaintext,
+        "Block": ''.join('{:02x}'.format(b) for b in msg),
+        "Result": toHex(sum(val << (32 * i) for i, val in enumerate([a0, b0, c0, d0])))
+    })
+
+
     print("finished with %s loops" % (count))
     writeJsonFile(json_data)
     return sum(val << (32 * i) for i, val in enumerate([a0, b0, c0, d0]))
 
 
 if __name__ == "__main__":
-    result = b"abc"
-    digest = MD5(result)
-    #print(digest)
+    digest = MD5("vasco gramaxo")
     print(toHex(digest))
 
 

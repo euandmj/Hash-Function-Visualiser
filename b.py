@@ -31,9 +31,9 @@ def md5(message):
     while len(message)%64 != 56:
         message.append(0)
     message += orig_len_in_bits.to_bytes(8, byteorder='little')
- 
     hash_pieces = init_values[:]
- 
+
+
     for chunk_ofst in range(0, len(message), 64):
         a, b, c, d = hash_pieces
         chunk = message[chunk_ofst:chunk_ofst+64]

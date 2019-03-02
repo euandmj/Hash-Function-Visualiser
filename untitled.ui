@@ -139,9 +139,9 @@
     <property name="geometry">
      <rect>
       <x>460</x>
-      <y>60</y>
+      <y>40</y>
       <width>171</width>
-      <height>341</height>
+      <height>111</height>
      </rect>
     </property>
     <property name="font">
@@ -233,9 +233,9 @@
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>20</x>
       <y>160</y>
-      <width>421</width>
+      <width>601</width>
       <height>241</height>
      </rect>
     </property>
@@ -251,7 +251,7 @@
     <widget class="QLabel" name="label_14">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>330</x>
        <y>110</y>
        <width>16</width>
        <height>16</height>
@@ -271,7 +271,7 @@
     <widget class="QLabel" name="label_9">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>50</x>
        <y>70</y>
        <width>16</width>
        <height>16</height>
@@ -284,15 +284,15 @@
     <widget class="QLineEdit" name="workingWordText">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>90</x>
        <y>40</y>
-       <width>271</width>
+       <width>501</width>
        <height>20</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>8</pointsize>
+       <pointsize>7</pointsize>
       </font>
      </property>
      <property name="readOnly">
@@ -302,7 +302,7 @@
     <widget class="QLineEdit" name="aBufferVal">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>90</x>
        <y>70</y>
        <width>151</width>
        <height>15</height>
@@ -320,7 +320,7 @@
     <widget class="QLabel" name="label_11">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>50</x>
        <y>110</y>
        <width>16</width>
        <height>16</height>
@@ -333,7 +333,7 @@
     <widget class="QLineEdit" name="gBufferVal">
      <property name="geometry">
       <rect>
-       <x>220</x>
+       <x>350</x>
        <y>110</y>
        <width>181</width>
        <height>16</height>
@@ -351,7 +351,7 @@
     <widget class="QLabel" name="label_12">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>50</x>
        <y>130</y>
        <width>16</width>
        <height>16</height>
@@ -364,7 +364,7 @@
     <widget class="QLineEdit" name="dBufferVal">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>90</x>
        <y>130</y>
        <width>151</width>
        <height>15</height>
@@ -382,7 +382,7 @@
     <widget class="QLabel" name="label_13">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>330</x>
        <y>70</y>
        <width>16</width>
        <height>16</height>
@@ -402,7 +402,7 @@
     <widget class="QLabel" name="loopCountLabel_2">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>40</y>
        <width>81</width>
        <height>16</height>
@@ -415,7 +415,7 @@
     <widget class="QLineEdit" name="bBufferVal">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>90</x>
        <y>90</y>
        <width>151</width>
        <height>15</height>
@@ -433,7 +433,7 @@
     <widget class="QLineEdit" name="cBufferVal">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>90</x>
        <y>110</y>
        <width>151</width>
        <height>15</height>
@@ -453,7 +453,7 @@
       <rect>
        <x>290</x>
        <y>20</y>
-       <width>81</width>
+       <width>111</width>
        <height>16</height>
       </rect>
      </property>
@@ -464,7 +464,7 @@
     <widget class="QLabel" name="label_10">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>50</x>
        <y>90</y>
        <width>16</width>
        <height>16</height>
@@ -477,9 +477,9 @@
     <widget class="QLineEdit" name="fBufferVal">
      <property name="geometry">
       <rect>
-       <x>220</x>
+       <x>350</x>
        <y>70</y>
-       <width>181</width>
+       <width>241</width>
        <height>16</height>
       </rect>
      </property>
@@ -495,9 +495,9 @@
     <widget class="QSlider" name="progressSlider">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>80</x>
        <y>180</y>
-       <width>361</width>
+       <width>461</width>
        <height>16</height>
       </rect>
      </property>
@@ -516,8 +516,8 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>430</y>
-      <width>591</width>
+      <y>420</y>
+      <width>601</width>
       <height>151</height>
      </rect>
     </property>
