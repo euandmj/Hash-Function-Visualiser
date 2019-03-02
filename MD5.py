@@ -151,13 +151,7 @@ def MD5(msg):
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
     digest = MD5("vasco gramaxo")
-=======
-    result = "abc"
-    digest = MD5(result)
-    #print(digest)
->>>>>>> e1721cc44a5d324b4ae0b97ceae4289756e6d9a6
     print(toHex(digest))
 
 
