@@ -14,14 +14,15 @@ class AppWindow(QMainWindow):
             super(AppWindow, self).__init__()
         
         # member variables
-        self.vector = [float, float] * 1000
+        self.vector = [int, int] * 1000
         self.isTrackEnabled = False
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setFixedSize(660, 800)
+        self.setFixedSize(915, 650)
         self.setMouseTracking(False)
         self.init_Connections()
+        self.init_Interface()
 
         self.show()
 
@@ -29,45 +30,54 @@ class AppWindow(QMainWindow):
         self.ui.hashButton.clicked.connect(self.hashButton_Clicked)
         self.ui.randomKeyButton.clicked.connect(self.randomKeyButton_Clicked)
         self.ui.progressSlider.valueChanged.connect(self.progressSlider_Changed)
-        self.ui.hashInput.textChanged.connect(self.hashInput_Changed)
+
+    def init_Interface(self):
+        pass
 
     def eventFilter(self, source, event):
         if event.type() == QtCore.QEvent.MouseMove:
-            if event.buttons() == QtCore.Qt.NoButton and self.isTrackEnabled:
+            if (event.buttons() == QtCore.Qt.NoButton and self.isTrackEnabled and
+                source == self.ui.mouseCaptureRegion):
                 pos = event.pos()
                 self.cursorMoved(pos.x(), pos.y())
-
         
         return QMainWindow.eventFilter(self, source, event)
     
     def hashButton_Clicked(self):
-        import MD5
         txt = str(self.ui.hashInput.text())
-        print(txt)
-        h = MD5.MD5(txt)
-        self.ui.outputText.setText(MD5.toHex(h))
-        
+        self.runHash(txt)
+        # set input binary text field
+        #s = ''.join("{:02x}".format(ord(x)) for x in txt)
+        s = ''.join(hex(ord(x))[2:] for x in txt)
+        self.ui.inputBinaryText.clear()
+        self.ui.inputBinaryText.setText("0x%s" % (s.upper()))
+
+    def runHash(self, input):
+        # first reset the ui
+        # feed a string and run it through the hash and
+        # update the user interface
+        import MD5
+
         # clear the data struct 
         self.data.clear()
+
+        h = MD5.MD5(input)
+        self.ui.outputText.setText(MD5.toHex(h))
+        
         self.data = mpu.io.read("loop.json")
     
         self.ui.blockText.clear()
         self.ui.blockText.setText(self.data[0]["Block"])
-        
 
-        self.ui.progressSlider.setMinimum(1)
         self.ui.progressSlider.setMaximum(len(self.data) - 1)
-
-    def hashInput_Changed(self):
-        # should hard reset the random key gen aspect of the application
-        self.vector.clear()
-        self.isTrackEnabled = False
-        self.ui.progressBar.setValue(0)
-        
+        self.ui.progressSlider.setEnabled(True)
+        self.ui.progressSlider.setValue(1)
 
     def randomKeyButton_Clicked(self):
+        self.isTrackEnabled = False
         self.vector.clear()
         self.isTrackEnabled = True
+        self.ui.mouseCaptureRegion.setTitle("Move your mouse in the region beleow to generate a random key")
 
     def progressSlider_Changed(self):
         current = self.data[self.ui.progressSlider.value()]
@@ -75,7 +85,7 @@ class AppWindow(QMainWindow):
         buffers = current["Loop"]["Buffers"]
         word = current["Loop"]["Word"]
         f = current["Loop"]["f"]
-        g = current["Loop"]["g"] 
+        g = current["Loop"]["g"]
         id = current["Loop"]["Id"]
         
         # update the ui 
@@ -94,39 +104,35 @@ class AppWindow(QMainWindow):
             self.mouse_vector_acquired()
             return
 
-        # check the cursor is within the bounds of the groupBox
-        rect = self.ui.mouseCaptureRegion.geometry()
-        xcoll = rect.x() <= x <= rect.x() + rect.width()
-        ycoll = rect.y() <= y <= rect.y() + rect.height()
-
-        if xcoll and ycoll:
-            self.vector.append([x, y])
-            self.ui.progressBar.setValue(len(self.vector) / 10)
+        self.vector.append([x, y])
+        self.ui.progressBar.setValue(len(self.vector) / 10)
     
     def mouse_vector_acquired(self):
         # called when 1000 mouse points have been collected
-        # will change the input hash to a string mean of the input
-        xmean = 0
-        ymean = 0
+        # will change the input hash to a string the sum of all points
+        
+        sum = 0
 
         for i in range(len(self.vector)):
-            xmean += self.vector[i][0]
-            ymean += self.vector[i][1]
-        
-        xmean /= len(self.vector)
-        ymean /= len(self.vector)
+            sum += self.vector[i][0] + self.vector[i][1]
 
-        self.ui.hashInput.setText("%f%f" % (xmean, ymean))
+        self.runHash(str(sum))
+        # reset the ui
+        self.ui.mouseCaptureRegion.setTitle("")
+        self.isTrackEnabled = False
+        self.ui.inputBinaryText.clear()
 
-def pretty_print(data, indent = 1):
+
+def pretty_print(data, indent=1):
     import pprint
     pp = pprint.PrettyPrinter(indent = indent)
     pp.pprint(data)
 
 if __name__ == "__main__":
-    #import qdarkgraystyle
+    import qdarkgraystyle
     app = QApplication(sys.argv)
-    #app.setStyleSheet(qdarkgraystyle.load_stylesheet_pyqt5())
+    app.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+    #app.setStyleSheet(qdarkgraystyle.load_stylesheet())
     window = AppWindow()
     window.show()
     app.installEventFilter(window)
