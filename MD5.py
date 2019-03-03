@@ -3,6 +3,8 @@ import psutil
 import json
 import os
 
+MASK_8bit = 0xFFFFFFFF
+
 rotate_amounts = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
                   5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
                   4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
@@ -24,7 +26,7 @@ def I(X, Y, Z):
 # bitshift left
 def leftrotate(b, n):
     b &= 0xFFFFFFFF
-    return ((b << n) | (b >> (32 - n))) & 0xFFFFFFFF
+    return ((b << n) | (b >> (32 - n))) & MASK_8bit
     
 def toHex(digest):
     raw = digest.to_bytes(16, byteorder='little')
@@ -42,7 +44,7 @@ def writeJsonFile(data):
     mpu.io.write('loop.json', data)
 
 # sine constants
-T = [int(abs(math.sin(i + 1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
+T = [int(abs(math.sin(i + 1)) * 2**32) & MASK_8bit for i in range(64)]
 # md5 buffers
 #a0 = 0x67452301   
 #b0 = 0xefcdab89   
@@ -55,6 +57,7 @@ json_data = []
 
 def MD5(msg):
     assert((msg is str) == False), "The input message is not a string."
+    json_data.clear()
     # md5 buffers
     # moved into function due to 
     # weird runtime error of variable usage before initialisation 
@@ -107,7 +110,7 @@ def MD5(msg):
                 g = (7 * i) % 16
             #calc rotatory             
             rota = A + f + T[i] + int.from_bytes(chunk[4*g:4*g+4], byteorder='little')
-            bb = (B + leftrotate(rota, rotate_amounts[i])) & 0xFFFFFFFF
+            bb = (B + leftrotate(rota, rotate_amounts[i])) & MASK_8bit
             A = D
             D = C
             C = B
@@ -129,10 +132,10 @@ def MD5(msg):
 
 
                 
-        a0 = (a0 + A) & 0xFFFFFFFF
-        b0 = (b0 + B) & 0xFFFFFFFF
-        c0 = (c0 + C) & 0xFFFFFFFF
-        d0 = (d0 + D) & 0xFFFFFFFF
+        a0 = (a0 + A) & MASK_8bit
+        b0 = (b0 + B) & MASK_8bit
+        c0 = (c0 + C) & MASK_8bit
+        d0 = (d0 + D) & MASK_8bit
 
     # append finally orignal message, padded block and the result
     json_data.insert(0, {
