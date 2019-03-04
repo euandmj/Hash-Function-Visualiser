@@ -4,15 +4,17 @@ from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow
 from window import Ui_MainWindow
 
+
 class AppWindow(QMainWindow):
     data = []
+
     def __init__(self):
         # python version calls
         if(sys.version_info > (3, 0)):
             super().__init__()
         else:
             super(AppWindow, self).__init__()
-        
+
         # member variables
         self.vector = [int, int] * 1000
         self.isTrackEnabled = False
@@ -29,20 +31,24 @@ class AppWindow(QMainWindow):
     def init_Connections(self):
         self.ui.hashButton.clicked.connect(self.hashButton_Clicked)
         self.ui.randomKeyButton.clicked.connect(self.randomKeyButton_Clicked)
-        self.ui.progressSlider.valueChanged.connect(self.progressSlider_Changed)
+        self.ui.progressSlider.valueChanged.connect(
+            self.progressSlider_Changed)
+        self.ui.exportButton.clicked.connect(self.exportButton_Clicked)
 
     def init_Interface(self):
         pass
 
     def eventFilter(self, source, event):
+        # event filter for a mouse movement over the mouse capture region
+        # for random key gen
         if event.type() == QtCore.QEvent.MouseMove:
             if (event.buttons() == QtCore.Qt.NoButton and self.isTrackEnabled and
-                source == self.ui.mouseCaptureRegion):
+                    source == self.ui.mouseCaptureRegion):
                 pos = event.pos()
                 self.cursorMoved(pos.x(), pos.y())
-        
+
         return QMainWindow.eventFilter(self, source, event)
-    
+
     def hashButton_Clicked(self):
         txt = str(self.ui.hashInput.text())
         self.runHash(txt)
@@ -52,20 +58,24 @@ class AppWindow(QMainWindow):
         self.ui.inputBinaryText.clear()
         self.ui.inputBinaryText.setText("0x%s" % (s.upper()))
 
+    def exportButton_Clicked(self):
+        pass
+
     def runHash(self, input):
         # first reset the ui
         # feed a string and run it through the hash and
         # update the user interface
-        import MD5
+        from HashLib import MD5
 
-        # clear the data struct 
+        # clear the data struct
         self.data.clear()
 
-        h = MD5.MD5(input)
-        self.ui.outputText.setText(MD5.toHex(h))
-        
+        M = MD5()
+        h = M.Hash(input)
+        self.ui.outputText.setText(h)
+
         self.data = mpu.io.read("loop.json")
-    
+
         self.ui.blockText.clear()
         self.ui.blockText.setText(self.data[0]["Block"])
 
@@ -77,7 +87,8 @@ class AppWindow(QMainWindow):
         self.isTrackEnabled = False
         self.vector.clear()
         self.isTrackEnabled = True
-        self.ui.mouseCaptureRegion.setTitle("Move your mouse in the region beleow to generate a random key")
+        self.ui.mouseCaptureRegion.setTitle(
+            "Move your mouse in the region beleow to generate a random key")
 
     def progressSlider_Changed(self):
         current = self.data[self.ui.progressSlider.value()]
@@ -87,8 +98,8 @@ class AppWindow(QMainWindow):
         f = current["Loop"]["f"]
         g = current["Loop"]["g"]
         id = current["Loop"]["Id"]
-        
-        # update the ui 
+
+        # update the ui
         self.ui.aBufferVal.setText(str(hex(buffers[0])))
         self.ui.bBufferVal.setText(str(hex(buffers[1])))
         self.ui.cBufferVal.setText(str(hex(buffers[2])))
@@ -97,20 +108,20 @@ class AppWindow(QMainWindow):
         self.ui.gBufferVal.setText(str(g))
         self.ui.workingWordText.setText(str(word))
         self.ui.loopCountLabel.setText('Loop Count: ' + str(id))
-    
+
     def cursorMoved(self, x, y):
         if len(self.vector) == 1000:
-            self.isTrackEnabled is False
+            self.isTrackEnabled = False
             self.mouse_vector_acquired()
             return
 
         self.vector.append([x, y])
         self.ui.progressBar.setValue(len(self.vector) / 10)
-    
+
     def mouse_vector_acquired(self):
         # called when 1000 mouse points have been collected
         # will change the input hash to a string the sum of all points
-        
+
         sum = 0
 
         for i in range(len(self.vector)):
@@ -125,14 +136,13 @@ class AppWindow(QMainWindow):
 
 def pretty_print(data, indent=1):
     import pprint
-    pp = pprint.PrettyPrinter(indent = indent)
+    pp = pprint.PrettyPrinter(indent=indent)
     pp.pprint(data)
 
+
 if __name__ == "__main__":
-    import qdarkgraystyle
     app = QApplication(sys.argv)
     app.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-    #app.setStyleSheet(qdarkgraystyle.load_stylesheet())
     window = AppWindow()
     window.show()
     app.installEventFilter(window)

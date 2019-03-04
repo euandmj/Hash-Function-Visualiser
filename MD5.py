@@ -10,18 +10,18 @@ rotate_amounts = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
                   4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
                   6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21] 
 
-# auxillary functions
-def F(X, Y, Z):
-    return (X & Y) | (~X & Z)
+# auBillarC functions
+def F(B, C, D):
+    return (B & C) | (~B & D)
 
-def G(X, Y, Z):
-    return (X & Z) | (Y & ~Z)
+def G(B, C, D):
+    return (B & D) | (C & ~D)
 
-def H(X, Y, Z):
-    return X ^ Y ^ Z
+def H(B, C, D):
+    return B ^ C ^ D
 
-def I(X, Y, Z):
-    return Y ^ (X | ~Z)
+def I(B, C, D):
+    return C ^ (B | ~D)
     
 # bitshift left
 def leftrotate(b, n):
