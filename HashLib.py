@@ -42,10 +42,10 @@ class MD5:
         # md5 buffers
         # moved into function due to 
         # weird runtime error of variable usage before initialisation 
-        a0 = 0x67452301
-        b0 = 0xefcdab89
-        c0 = 0x98badcfe
-        d0 = 0x10325476
+        a0 = self.a0
+        b0 = self.b0
+        c0 = self.c0
+        d0 = self.d0
         plaintext = msg
 
         count = 0
@@ -66,10 +66,10 @@ class MD5:
         for j in range(0, len(msg), 64):
             chunk = msg[j : j + 64]
 
-            A = self.a0
-            B = self.b0
-            C = self.c0
-            D = self.d0
+            A = a0
+            B = b0
+            C = c0
+            D = d0
 
             # main loop
             for i in range(64):
