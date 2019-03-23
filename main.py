@@ -1,8 +1,10 @@
 import sys
 import mpu.io
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow
+from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QFileDialog
 from window import Ui_MainWindow
+from HashLib import MD5
+
 
 
 class AppWindow(QMainWindow):
@@ -21,8 +23,9 @@ class AppWindow(QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setFixedSize(915, 650)
+        self.setFixedSize(910, 720)
         self.setMouseTracking(False)
+        self.setWindowIcon(QtGui.QIcon("res/icon.png"))
         self.init_Connections()
         self.init_Interface()
 
@@ -30,13 +33,23 @@ class AppWindow(QMainWindow):
 
     def init_Connections(self):
         self.ui.hashButton.clicked.connect(self.hashButton_Clicked)
+        self.ui.loadFileButton.clicked.connect(self.loadFileButton_Clicked)
         self.ui.randomKeyButton.clicked.connect(self.randomKeyButton_Clicked)
-        self.ui.progressSlider.valueChanged.connect(
-            self.progressSlider_Changed)
+        self.ui.progressSlider.valueChanged.connect(self.progressSlider_Changed)
         self.ui.exportButton.clicked.connect(self.exportButton_Clicked)
 
     def init_Interface(self):
-        pass
+        from PyQt5.QtGui import QPixmap
+        from PyQt5.QtWidgets import QGraphicsPixmapItem
+        pixmap = QPixmap("res/test.png")
+        pixmap = pixmap.scaled(self.ui.md5graphiclabel.width(), self.ui.md5graphiclabel.height())
+        self.ui.md5graphiclabel.setPixmap(pixmap)
+        #item = QGraphicsPixmapItem(pixmap)
+        
+        # css
+        with open("res/darkorange.stylesheet.css", "r") as f:
+            qstr = f.read()
+            self.setStyleSheet(qstr)
 
     def eventFilter(self, source, event):
         # event filter for a mouse movement over the mouse capture region
@@ -50,29 +63,37 @@ class AppWindow(QMainWindow):
         return QMainWindow.eventFilter(self, source, event)
 
     def hashButton_Clicked(self):
-        txt = str(self.ui.hashInput.text())
-        self.runHash(txt)
+        #read in the text and send the ascii encoded byte array to the md5 function 
+        msg = str(self.ui.hashInput.text())
+        # msg = bytes(msg, encoding="utf-8")
+
+        self.runHash(msg)
         # set input binary text field
         #s = ''.join("{:02x}".format(ord(x)) for x in txt)
-        s = ''.join(hex(ord(x))[2:] for x in txt)
+        s = ''.join(hex(ord(x))[2:] for x in self.ui.hashInput.text())
         self.ui.inputBinaryText.clear()
         self.ui.inputBinaryText.setText("0x%s" % (s.upper()))
+
+    def loadFileButton_Clicked(self):
+        filen = QFileDialog.getOpenFileName(self, "Open File", "/home")
+        self.runHash(filen, True)
 
     def exportButton_Clicked(self):
         pass
 
-    def runHash(self, input):
+    def runHash(self, input, load_file=False):
+        # wait cursor
+
         # first reset the ui
         # feed a string and run it through the hash and
         # update the user interface
-        from HashLib import MD5
 
         # clear the data struct
         self.data.clear()
 
         M = MD5()
-        h = M.Hash(input)
-        self.ui.outputText.setText(h)
+        h = M.Hash(input, load_file)
+        self.ui.outputText.setText(h.upper())
 
         self.data = mpu.io.read("loop.json")
 
@@ -82,6 +103,7 @@ class AppWindow(QMainWindow):
         self.ui.progressSlider.setMaximum(len(self.data) - 1)
         self.ui.progressSlider.setEnabled(True)
         self.ui.progressSlider.setValue(1)
+        self.progressSlider_Changed()
 
     def randomKeyButton_Clicked(self):
         self.isTrackEnabled = False
@@ -106,7 +128,7 @@ class AppWindow(QMainWindow):
         self.ui.dBufferVal.setText(str(hex(buffers[3])))
         self.ui.fBufferVal.setText(str(f))
         self.ui.gBufferVal.setText(str(g))
-        self.ui.workingWordText.setText(str(word))
+        self.ui.workingWordText.setText(str(word).upper())
         self.ui.loopCountLabel.setText('Loop Count: ' + str(id))
 
     def cursorMoved(self, x, y):
@@ -123,7 +145,6 @@ class AppWindow(QMainWindow):
         # will change the input hash to a string the sum of all points
 
         sum = 0
-
         for i in range(len(self.vector)):
             sum += self.vector[i][0] + self.vector[i][1]
 

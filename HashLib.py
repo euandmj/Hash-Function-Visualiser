@@ -2,6 +2,7 @@ import json
 import math
 import os
 import psutil
+import mpu.io
 
 MASK_8bit = 0xFFFFFFFF
 MASK_32bit = 0xFFFFFFFFFFFFFFFF
@@ -18,7 +19,7 @@ def toHex(digest):
 class MD5:
     def __init__(self):
         self.rotate_amounts = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
-                               5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
+                               5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
                                4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
                                6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21]
         self.T = [int(abs(math.sin(i + 1)) * 2**32) & MASK_8bit for i in range(64)]
@@ -29,14 +30,36 @@ class MD5:
         self.json_data = []
         
     def writeJsonFile(self, data):
-        import mpu.io
+        filepath = "loop.json"
         # attempt to fix bug of only overwriting once per program instance
-        if os.path.exists('loop.json'):
-            os.remove('loop.json')
-        mpu.io.write('loop.json', data)
+        if os.path.isfile(filepath):
+            os.remove(filepath)
+        mpu.io.write(filepath, data)
 
-    def Hash(self, msg, write_to_file=True):
-        assert((msg is str) == False), "The input message is not a string"
+    def Hash(self, msg, load_from_file=False, write_to_file=True):
+        assert((msg is str) == False), "MD5 function expected bytes, received %s" % (type(msg))
+
+        if load_from_file:
+            plaintext = msg
+            # load the file using the msg as directory
+            with open(msg[0], "rb") as f:
+                msg = f.read()
+        else:
+            # parse ascii to bytes
+            plaintext = msg
+            msg = bytes(msg, encoding="utf-8")
+
+        # # parse the string into b
+        # if msg is str:
+        #     #convert string to bytearray
+        #     #add some check for utf vs ascii 
+        #     msg = bytes(msg, encoding="utf-8")
+        #     msg = bytearray(msg)
+        #     plaintext = msg
+        # else:
+        #     with open("msg", "rb") as f:
+        #         msg = f.read() 
+
         self.json_data.clear()
 
         # md5 buffers
@@ -46,23 +69,20 @@ class MD5:
         b0 = self.b0
         c0 = self.c0
         d0 = self.d0
-        plaintext = msg
 
         count = 0
 
-        #convert string to bytearray
-        #add some check for utf vs ascii 
-        msg = bytes(msg, encoding="utf-8")
         msg = bytearray(msg)
         length = (8 * len(msg)) & 0xFFFFFFFFFFFFFFFF
         # add 1
         msg.append(0x80)
 
-        while len(msg) % 64 != 56: msg.append(0)
+        while len(msg) % 64 != 56: 
+            msg.append(0)
 
         msg += length.to_bytes(8, byteorder='little')
 
-        # for each 32 bit word
+        # for each 64 bit chunk
         for j in range(0, len(msg), 64):
             chunk = msg[j : j + 64]
 
@@ -78,7 +98,7 @@ class MD5:
                     # aux func F
                     f = (B & C) | (~B & D)
                     g = i
-                if 16 <= i<= 31:
+                if 16 <= i <= 31:
                     # aux func G
                     f = (B & D) | (C & ~D)
                     g = (5 * i + 1) % 16
