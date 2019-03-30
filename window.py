@@ -225,10 +225,9 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
-        self.md5graphiclabel = QtWidgets.QLabel(self.tab_2)
-        self.md5graphiclabel.setGeometry(QtCore.QRect(10, 10, 861, 389))
-        self.md5graphiclabel.setText("")
-        self.md5graphiclabel.setObjectName("md5graphiclabel")
+        self.launchVisualiserButton = QtWidgets.QPushButton(self.tab_2)
+        self.launchVisualiserButton.setGeometry(QtCore.QRect(390, 170, 80, 16))
+        self.launchVisualiserButton.setObjectName("launchVisualiserButton")
         self.tabWidget.addTab(self.tab_2, "")
         self.verticalLayout.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -245,7 +244,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.hashCombo.setCurrentIndex(0)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -268,6 +267,7 @@ class Ui_MainWindow(object):
         self.label_11.setText(_translate("MainWindow", "Buffer C"))
         self.label_12.setText(_translate("MainWindow", "Buffer D"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Main Loop"))
+        self.launchVisualiserButton.setText(_translate("MainWindow", "PushButton"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Graphical View"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
 

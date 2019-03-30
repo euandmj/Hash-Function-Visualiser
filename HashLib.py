@@ -110,8 +110,10 @@ class MD5:
                     # aux func I
                     f = C ^ (B | ~D)
                     g = (7 * i) % 16
-                #calc rotatory             
-                rota = A + f + self.T[i] + int.from_bytes(chunk[4*g:4*g+4], byteorder='little')
+                #calc rotatory
+                ff = f # saved output of aux func for visual data
+                M = int.from_bytes(chunk[4*g: 4*g+4], byteorder='little') # 4 bit m chunk
+                rota = A + f + self.T[i] + M
                 bb = (B + leftrotate(rota, self.rotate_amounts[i])) & MASK_8bit
                 A = D
                 D = C
@@ -121,12 +123,19 @@ class MD5:
                 # construct json file
                 data = {
                     "Loop": {
-                        "Id": count,
+                        "Id": count,                        
                         "Word": ''.join('{:02x}'.format(b) for b in chunk),
                         "Buffers": [A, B, C, D],
                         "Rotate": self.rotate_amounts[i],
                         "f": f,
-                        "g": g,
+                        "g": g
+                    },
+                    "VisualData": {
+                        "i": i,
+                        "Buffers": [A, B, C, D],
+                        "F": ff,
+                        "M": M,
+                        "S": rota,
                         "T": self.T[i],
                     }
                 }

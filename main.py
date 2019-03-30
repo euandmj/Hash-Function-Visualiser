@@ -1,4 +1,7 @@
 import sys
+import os
+import mpu.io
+import psutil
 import mpu.io
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QFileDialog
@@ -37,15 +40,9 @@ class AppWindow(QMainWindow):
         self.ui.randomKeyButton.clicked.connect(self.randomKeyButton_Clicked)
         self.ui.progressSlider.valueChanged.connect(self.progressSlider_Changed)
         self.ui.exportButton.clicked.connect(self.exportButton_Clicked)
+        self.ui.launchVisualiserButton.clicked.connect(self.launchVisualTab)
 
     def init_Interface(self):
-        from PyQt5.QtGui import QPixmap
-        from PyQt5.QtWidgets import QGraphicsPixmapItem
-        pixmap = QPixmap("res/test.png")
-        pixmap = pixmap.scaled(self.ui.md5graphiclabel.width(), self.ui.md5graphiclabel.height())
-        self.ui.md5graphiclabel.setPixmap(pixmap)
-        #item = QGraphicsPixmapItem(pixmap)
-        
         # css
         with open("res/darkorange.stylesheet.css", "r") as f:
             qstr = f.read()
@@ -80,6 +77,28 @@ class AppWindow(QMainWindow):
 
     def exportButton_Clicked(self):
         pass
+    
+    def launchVisualTab(self):
+        # get the current index of the scrollbar
+        # export the import data to curr_loop.json
+        # while the process is running, "pause this program"
+        filen = "curr_loop.json"
+        
+        # visualiser needs:
+        # A B C D
+        # M T S
+        current = self.data[self.ui.progressSlider.value()]       
+        
+        visualdata = current["VisualData"]
+
+        if os.path.isfile(filen):
+            os.remove(filen)
+        mpu.io.write(filen, visualdata)
+
+
+        os.system("Visualiser.exe")
+
+
 
     def runHash(self, input, load_file=False):
         # wait cursor

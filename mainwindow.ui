@@ -245,7 +245,7 @@
      <item>
       <widget class="QTabWidget" name="tabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
@@ -521,17 +521,17 @@
         <attribute name="title">
          <string>Graphical View</string>
         </attribute>
-        <widget class="QLabel" name="md5graphiclabel">
+        <widget class="QPushButton" name="launchVisualiserButton">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>10</y>
-           <width>861</width>
-           <height>389</height>
+           <x>390</x>
+           <y>170</y>
+           <width>80</width>
+           <height>16</height>
           </rect>
          </property>
          <property name="text">
-          <string/>
+          <string>PushButton</string>
          </property>
         </widget>
        </widget>
