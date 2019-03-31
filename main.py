@@ -6,8 +6,23 @@ import mpu.io
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QFileDialog, QTableWidgetItem
 from window import Ui_MainWindow
-from HashLib import MD5, SHA1
+from libs.HashLib import MD5, SHA1
 
+def openFile(file):
+    try:
+        os.startfile(file)
+    except FileNotFoundError:
+        print("the file %s was not found?" % (file))
+    except Exception as e:
+        print(str(e))
+    
+def pretty_print(data, indent=1):
+    import pprint
+    pp = pprint.PrettyPrinter(indent=indent)
+    pp.pprint(data)
+
+def foo():
+    print("foo")
 
 
 class AppWindow(QMainWindow):
@@ -23,8 +38,8 @@ class AppWindow(QMainWindow):
         # member variables
         self.vector = [int, int] * 1000
         self.isTrackEnabled = False
-
-        self.metadata = []
+        # load hash meta file
+        self.metadata = mpu.io.read("hash_meta.json")
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -33,6 +48,9 @@ class AppWindow(QMainWindow):
         self.setWindowIcon(QtGui.QIcon("res/icon.png"))
         self.init_Connections()
         self.init_Interface()
+
+        
+        self.hashSelectionChanged()
 
         self.show()
 
@@ -49,12 +67,9 @@ class AppWindow(QMainWindow):
         # css
         with open("res/darkorange.stylesheet.css", "r") as f:
             qstr = f.read()
-            self.setStyleSheet(qstr)
+            self.setStyleSheet(qstr)        
 
-        # load hash meta file
-        self.metadata = mpu.io.read("hash_meta.json")
-        self.hashSelectionChanged()
-
+        self.ui.launchVisualiserError.hide()
 
     def eventFilter(self, source, event):
         # event filter for a mouse movement over the mouse capture region
@@ -89,6 +104,11 @@ class AppWindow(QMainWindow):
         pass
     
     def launchVisualTab(self):
+        # if the current system is not windows....
+        if os.name != 'nt':
+            self.ui.launchVisualiserError.show()
+            return
+
         # get the current index of the scrollbar
         # export the import data to curr_loop.json
         # while the process is running, "pause this program"
@@ -106,7 +126,10 @@ class AppWindow(QMainWindow):
         mpu.io.write(filen, visualdata)
 
 
-        os.system("Visualiser.exe")
+        openFile("wpf_visual\Visualiser\Visualiser\\bin\Debug\Visualiser.exe")
+        #self.openFile("Visualiser.exe")
+    
+    
 
     def runHash(self, input, load_file=False):
         # wait cursor
@@ -147,6 +170,7 @@ class AppWindow(QMainWindow):
         f = current["Loop"]["f"]
         g = current["Loop"]["g"]
         id = current["Loop"]["Id"]
+        self.ui.menubar[0][0].clicked.connect(foo)
 
         # update the ui
         self.ui.aBufferVal.setText(str(hex(buffers[0])))
@@ -178,6 +202,14 @@ class AppWindow(QMainWindow):
         header = self.ui.sineTable.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+
+        # populate register data
+        registers = data["Registers"]
+        self.ui.regAText.setText(registers["A"])
+        self.ui.regBText.setText(registers["B"])
+        self.ui.regCText.setText(registers["C"])
+        self.ui.regDText.setText(registers["D"])
+
 
         for i in range(16):
             # row from the json file
@@ -218,11 +250,6 @@ class AppWindow(QMainWindow):
         self.isTrackEnabled = False
         self.ui.inputBinaryText.clear()
 
-
-def pretty_print(data, indent=1):
-    import pprint
-    pp = pprint.PrettyPrinter(indent=indent)
-    pp.pprint(data)
 
 
 if __name__ == "__main__":

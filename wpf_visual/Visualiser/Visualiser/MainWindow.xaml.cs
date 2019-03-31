@@ -20,6 +20,7 @@ namespace Visualiser
     struct Loop
     {
         public Int64[] Buffers;
+        public Int64[] BuffersNew;
         public Int64 F;
         public Int64 M;
         public Int64 S;
@@ -30,6 +31,11 @@ namespace Visualiser
         public string GetBuffer(int n)
         {
             return Buffers[n].ToString();
+        }
+
+        public string GetNewBuffer(int n)
+        {
+            return BuffersNew[n].ToString();
         }
     }
     /// <summary>
@@ -62,6 +68,11 @@ namespace Visualiser
             BufferB.Text = Loop.GetBuffer(1);
             BufferC.Text = Loop.GetBuffer(2);
             BufferD.Text = Loop.GetBuffer(3);
+
+            BufferA_Copy.Text = Loop.GetNewBuffer(0);
+            BufferB_Copy.Text = Loop.GetNewBuffer(1);
+            BufferC_Copy.Text = Loop.GetNewBuffer(2);
+            BufferD_Copy.Text = Loop.GetNewBuffer(3);
 
         }
 

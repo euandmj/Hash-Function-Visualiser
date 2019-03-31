@@ -100,8 +100,18 @@ class MD5:
                     f = C ^ (B | ~D)
                     g = (7 * i) % 16
                 #calc rotatory
-                ff = f # saved output of aux func for visual data
-                M = int.from_bytes(chunk[4*g: 4*g+4], byteorder='little') # 4 bit m chunk
+
+                # visual data save point
+                vdata = {
+                    "i": i,
+                    "Buffers": [A, B, C, D],
+                    "F": f,
+                    "T": self.T[i]
+                }
+                
+                # int value from the 4 byte chunk
+                M = int.from_bytes(chunk[4*g: 4*g+4], byteorder='little')                           
+
                 rota = A + f + self.T[i] + M
                 bb = (B + leftrotate(rota, self.rotate_amounts[i])) & MASK_8bit
                 A = D
@@ -119,13 +129,14 @@ class MD5:
                         "f": f,
                         "g": g
                     },
-                    "VisualData": {
-                        "i": i,
-                        "Buffers": [A, B, C, D],
-                        "F": ff,
+                    "VisualData":{
+                        "i": vdata["i"],
+                        "Buffers": vdata["Buffers"],
+                        "BuffersNew": [A, B, C, D],
+                        "F": vdata["F"],
                         "M": M,
                         "S": rota,
-                        "T": self.T[i],
+                        "T": self.T[i]
                     }
                 }
                 self.json_data.append(data)
