@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="1040" Width="569.667">
     <Grid>
-        <Image HorizontalAlignment="Left" Height="1011" VerticalAlignment="Top" Width="615" Margin="0,0,-15,-0.333" Source="res/md5_vertical.png"/>
+        <Image HorizontalAlignment="Left" Height="1011" VerticalAlignment="Top" Width="615" Margin="-1,0,-50.667,-0.333" Source="res/md5_vertical.png"/>
 
         <Rectangle x:Name="mblock_click" HorizontalAlignment="Left" Height="38" Margin="164,250,0,0" VerticalAlignment="Top" Width="40" ToolTip="this is the integer value of the worker message block" MouseDown="Mblock_click_MouseDown">
             <Rectangle.Fill>

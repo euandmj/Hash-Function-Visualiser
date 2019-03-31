@@ -9,7 +9,7 @@ MASK_32bit = 0xFFFFFFFFFFFFFFFF
 
 # bitshift left
 def leftrotate(b, n):
-    b &= 0xFFFFFFFF
+    b &= MASK_8bit
     return ((b << n) | (b >> (32 - n))) & MASK_8bit
     
 def toHex(digest):
@@ -48,17 +48,6 @@ class MD5:
             # parse ascii to bytes
             plaintext = msg
             msg = bytes(msg, encoding="utf-8")
-
-        # # parse the string into b
-        # if msg is str:
-        #     #convert string to bytearray
-        #     #add some check for utf vs ascii 
-        #     msg = bytes(msg, encoding="utf-8")
-        #     msg = bytearray(msg)
-        #     plaintext = msg
-        # else:
-        #     with open("msg", "rb") as f:
-        #         msg = f.read() 
 
         self.json_data.clear()
 
@@ -190,23 +179,33 @@ class SHA1:
         else:
             return 0xCA62C1D6
 
-    def Hash(self, msg):
-        assert((msg is str) == False), "The input message is not a string."
+    def Hash(self, msg, load_from_file=False, write_to_file=True):
+        assert((msg is str) == False), "MD5 function expected bytes, received %s" % (type(msg))
+        
+        if load_from_file:
+            plaintext = msg
+            # load the file using the msg as directory
+            with open(msg[0], "rb") as f:
+                msg = f.read()
+        else:
+            # parse ascii to bytes
+            plaintext = msg
+            msg = bytes(msg, encoding="utf-8")
 
         H0 = self.H0
         H1 = self.H1
         H2 = self.H2
         H3 = self.H3
         H4 = self.H4
-
-        msg = bytes(msg, encoding='utf-8')
+       
         msg = bytearray(msg)
 
         length = (8 * len(msg)) & 0xFFFFFFFFFFFFFFFF
 
         # pad
         msg.append(0x80)
-        while len(msg) % 64 != 56: msg.append(0)
+        while len(msg) % 64 != 56: 
+            msg.append(0)
 
         msg += length.to_bytes(8, byteorder='little')
 
@@ -251,5 +250,5 @@ class SHA1:
     
         # After processing M(n), the message digest is the 160-bit string
         # represented by the 5 words
-        #return '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)
-        return sum(val << (32 * i) for i, val in enumerate([H0, H1, H2, H3, H4]))
+        return '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)
+        #return toHex(sum(val << (32 * i) for i, val in enumerate([H0, H1, H2, H3, H4])))

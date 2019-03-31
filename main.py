@@ -4,9 +4,9 @@ import mpu.io
 import psutil
 import mpu.io
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QFileDialog, QTableWidgetItem
 from window import Ui_MainWindow
-from HashLib import MD5
+from HashLib import MD5, SHA1
 
 
 
@@ -23,6 +23,8 @@ class AppWindow(QMainWindow):
         # member variables
         self.vector = [int, int] * 1000
         self.isTrackEnabled = False
+
+        self.metadata = []
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -41,12 +43,18 @@ class AppWindow(QMainWindow):
         self.ui.progressSlider.valueChanged.connect(self.progressSlider_Changed)
         self.ui.exportButton.clicked.connect(self.exportButton_Clicked)
         self.ui.launchVisualiserButton.clicked.connect(self.launchVisualTab)
+        self.ui.hashCombo.currentIndexChanged.connect(self.hashSelectionChanged)
 
     def init_Interface(self):
         # css
         with open("res/darkorange.stylesheet.css", "r") as f:
             qstr = f.read()
             self.setStyleSheet(qstr)
+
+        # load hash meta file
+        self.metadata = mpu.io.read("hash_meta.json")
+        self.hashSelectionChanged()
+
 
     def eventFilter(self, source, event):
         # event filter for a mouse movement over the mouse capture region
@@ -73,7 +81,9 @@ class AppWindow(QMainWindow):
 
     def loadFileButton_Clicked(self):
         filen = QFileDialog.getOpenFileName(self, "Open File", "/home")
-        self.runHash(filen, True)
+        # check if a file was chosen and note qdialog exited
+        if filen[1] != '':
+            self.runHash(filen, True)
 
     def exportButton_Clicked(self):
         pass
@@ -97,8 +107,6 @@ class AppWindow(QMainWindow):
 
 
         os.system("Visualiser.exe")
-
-
 
     def runHash(self, input, load_file=False):
         # wait cursor
@@ -149,6 +157,43 @@ class AppWindow(QMainWindow):
         self.ui.gBufferVal.setText(str(g))
         self.ui.workingWordText.setText(str(word).upper())
         self.ui.loopCountLabel.setText('Loop Count: ' + str(id))
+
+    def hashSelectionChanged(self):
+        comboIndex = self.ui.hashCombo.currentIndex()
+
+        if comboIndex == 0:
+            # md5 chosen
+            # update constants area
+            self.updateConstantRegion(self.metadata["MD5"])
+
+        elif comboIndex == 1:
+            # sha1 chosen
+            pass
+
+    def updateConstantRegion(self, data):
+        self.ui.sineTable.setRowCount(16)
+        self.ui.sineTable.setColumnCount(2)
+        
+        from PyQt5.QtWidgets import QHeaderView
+        header = self.ui.sineTable.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+
+        for i in range(16):
+            # row from the json file
+            row = data["Sine Table"][str(i)]
+            split = row.split(',')
+            self.ui.sineTable.setItem(i, 0, QTableWidgetItem(str(i).upper()))
+            self.ui.sineTable.setItem(i, 1, QTableWidgetItem(split[0]))
+
+            self.ui.sineTable.setItem(i+1, 0, QTableWidgetItem(str(i+1).upper()))
+            self.ui.sineTable.setItem(i+1, 1, QTableWidgetItem(split[1]))
+            
+            self.ui.sineTable.setItem(i+2, 0, QTableWidgetItem(str(i+2).upper()))
+            self.ui.sineTable.setItem(i+2, 1, QTableWidgetItem(split[2]))
+            
+            self.ui.sineTable.setItem(i+3, 0, QTableWidgetItem(str(i+3).upper()))
+            self.ui.sineTable.setItem(i+3, 1, QTableWidgetItem(split[3]))
 
     def cursorMoved(self, x, y):
         if len(self.vector) == 1000:
