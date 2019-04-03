@@ -445,7 +445,7 @@ QRadioButton::indicator
 
 QRadioButton::indicator:hover, QCheckBox::indicator:hover
 {
-    border: 1px solid #ffaa00;
+    border: 1px solid #5a5a5a;
 }
 
 QCheckBox::indicator:checked

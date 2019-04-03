@@ -57,7 +57,7 @@ namespace Visualiser
             }
             Loop = new JavaScriptSerializer().Deserialize<Loop>(raw);
 
-
+            this.Title = this.Title + (Loop.I + 1).ToString();
 
             Initialise();
         }

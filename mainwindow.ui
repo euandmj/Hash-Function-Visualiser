@@ -125,6 +125,9 @@
         <property name="placeholderText">
          <string>Enter Input to be Hashed</string>
         </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
        </widget>
        <widget class="QPushButton" name="loadFileButton">
         <property name="geometry">
@@ -188,9 +191,9 @@
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>10</y>
+      <y>0</y>
       <width>391</width>
-      <height>241</height>
+      <height>251</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_3">
@@ -209,10 +212,13 @@
         <property name="geometry">
          <rect>
           <x>230</x>
-          <y>90</y>
+          <y>49</y>
           <width>151</width>
-          <height>20</height>
+          <height>61</height>
          </rect>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
         </property>
         <property name="readOnly">
          <bool>true</bool>
@@ -245,7 +251,7 @@
          <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
+         <enum>Qt::ScrollBarAsNeeded</enum>
         </property>
         <property name="horizontalScrollBarPolicy">
          <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -286,7 +292,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Register A</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#83ac60;&quot;&gt;Register A&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_17">
@@ -299,7 +305,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Register B</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#58b4e2;&quot;&gt;Register B&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_18">
@@ -312,7 +318,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Register D</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#dbaa2f;&quot;&gt;Register D&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_19">
@@ -325,7 +331,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Register C</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff1111;&quot;&gt;Register C&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="regAText">
@@ -380,6 +386,19 @@
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QLabel" name="label_20">
+        <property name="geometry">
+         <rect>
+          <x>230</x>
+          <y>30</y>
+          <width>121</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Message Binary</string>
+        </property>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -396,6 +415,9 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QTabWidget" name="tabWidget">
+       <property name="tabPosition">
+        <enum>QTabWidget::North</enum>
+       </property>
        <property name="currentIndex">
         <number>0</number>
        </property>
@@ -412,29 +434,11 @@
            <height>271</height>
           </rect>
          </property>
-         <widget class="QPushButton" name="launchVisualiserButton">
-          <property name="geometry">
-           <rect>
-            <x>530</x>
-            <y>200</y>
-            <width>131</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Visualise this section</string>
-          </property>
-         </widget>
         </widget>
         <widget class="QPushButton" name="exportButton">
          <property name="geometry">
           <rect>
-           <x>420</x>
+           <x>380</x>
            <y>290</y>
            <width>71</width>
            <height>20</height>
@@ -590,14 +594,14 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>Buffer A</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#83ac60;&quot;&gt;Register A&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_10">
             <property name="text">
-             <string>Buffer B</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#58b4e2;&quot;&gt;Register B&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -616,7 +620,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_11">
             <property name="text">
-             <string>Buffer C</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff1111;&quot;&gt;Register C&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -635,7 +639,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_12">
             <property name="text">
-             <string>Buffer D</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#dbaa2f;&quot;&gt;Register D&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -711,11 +715,24 @@
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
-       </widget>
-       <widget class="QWidget" name="tab_2">
-        <attribute name="title">
-         <string>Graphical View</string>
-        </attribute>
+        <widget class="QPushButton" name="launchVisualiserButton">
+         <property name="geometry">
+          <rect>
+           <x>470</x>
+           <y>290</y>
+           <width>131</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Visualise this section</string>
+         </property>
+        </widget>
        </widget>
       </widget>
      </item>
@@ -736,6 +753,7 @@
      <string>File</string>
     </property>
     <addaction name="actionConverter_Tool"/>
+    <addaction name="actionKill_Children"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -743,6 +761,11 @@
   <action name="actionConverter_Tool">
    <property name="text">
     <string>Converter Tool</string>
+   </property>
+  </action>
+  <action name="actionKill_Children">
+   <property name="text">
+    <string>Kill Child Processes</string>
    </property>
   </action>
  </widget>

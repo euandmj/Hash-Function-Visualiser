@@ -62,6 +62,9 @@ class AppWindow(QMainWindow):
         self.ui.exportButton.clicked.connect(self.exportButton_Clicked)
         self.ui.launchVisualiserButton.clicked.connect(self.launchVisualTab)
         self.ui.hashCombo.currentIndexChanged.connect(self.hashSelectionChanged)
+        self.ui.actionConverter_Tool.triggered.connect(self.launchConversionTool)
+        self.ui.actionKill_Children.triggered.connect(self.killChildPs)
+
 
     def init_Interface(self):
         # css
@@ -70,6 +73,7 @@ class AppWindow(QMainWindow):
             self.setStyleSheet(qstr)        
 
         self.ui.launchVisualiserError.hide()
+
 
     def eventFilter(self, source, event):
         # event filter for a mouse movement over the mouse capture region
@@ -101,13 +105,15 @@ class AppWindow(QMainWindow):
             self.runHash(filen, True)
 
     def exportButton_Clicked(self):
-        pass
-    
+        pass    
+
     def launchVisualTab(self):
         # if the current system is not windows....
         if os.name != 'nt':
             self.ui.launchVisualiserError.show()
             return
+      
+        
 
         # get the current index of the scrollbar
         # export the import data to curr_loop.json
@@ -129,7 +135,15 @@ class AppWindow(QMainWindow):
         openFile("wpf_visual\Visualiser\Visualiser\\bin\Debug\Visualiser.exe")
         #self.openFile("Visualiser.exe")
     
-    
+    def killChildPs(self):
+        ps = psutil.Process()
+        children = ps.children(recursive=True)
+
+        for c in children:
+            c.kill()
+
+    def launchConversionTool(self):
+        pass
 
     def runHash(self, input, load_file=False):
         # wait cursor
@@ -170,7 +184,6 @@ class AppWindow(QMainWindow):
         f = current["Loop"]["f"]
         g = current["Loop"]["g"]
         id = current["Loop"]["Id"]
-        self.ui.menubar[0][0].clicked.connect(foo)
 
         # update the ui
         self.ui.aBufferVal.setText(str(hex(buffers[0])))
@@ -249,6 +262,13 @@ class AppWindow(QMainWindow):
         self.ui.mouseCaptureRegion.setTitle("")
         self.isTrackEnabled = False
         self.ui.inputBinaryText.clear()
+    
+    def __del__(self):
+        ps = psutil.Process()
+        children = ps.children(recursive=True)
+
+        for c in children:
+            c.kill()
 
 
 
