@@ -112,8 +112,9 @@ class AppWindow(QMainWindow):
         if os.name != 'nt':
             self.ui.launchVisualiserError.show()
             return
-      
         
+        if len(self.data) ==  0:
+            return
 
         # get the current index of the scrollbar
         # export the import data to curr_loop.json
