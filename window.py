@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'mainwindow.ui'
+# Form implementation generated from reading ui file 'I:\Documents\Uni\year 3\diss\pyMD5\mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.3
 #
@@ -312,7 +312,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 904, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 904, 17))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -348,7 +348,7 @@ class Ui_MainWindow(object):
         self.label_18.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#dbaa2f;\">Register D</span></p></body></html>"))
         self.label_19.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#ff1111;\">Register C</span></p></body></html>"))
         self.label_20.setText(_translate("MainWindow", "Message Binary"))
-        self.label_21.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#834187;\">Register D</span></p></body></html>"))
+        self.label_21.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#834187;\">Register E</span></p></body></html>"))
         self.exportButton.setText(_translate("MainWindow", "Export"))
         self.label_13.setText(_translate("MainWindow", "F"))
         self.label_14.setText(_translate("MainWindow", "g"))
@@ -358,11 +358,21 @@ class Ui_MainWindow(object):
         self.label_10.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#58b4e2;\">Register B</span></p></body></html>"))
         self.label_11.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#ff1111;\">Register C</span></p></body></html>"))
         self.label_12.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#dbaa2f;\">Register D</span></p></body></html>"))
-        self.label_15.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#834187;\">Register D</span></p></body></html>"))
+        self.label_15.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#834187;\">Register E</span></p></body></html>"))
         self.launchVisualiserError.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#aa0000;\">Visualiser is not currently supported on your system</span></p></body></html>"))
         self.launchVisualiserButton.setText(_translate("MainWindow", "Visualise this section"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Main Loop"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.actionConverter_Tool.setText(_translate("MainWindow", "Converter Tool"))
         self.actionKill_Children.setText(_translate("MainWindow", "Close Other Windows"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 

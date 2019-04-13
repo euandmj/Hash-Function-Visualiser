@@ -175,7 +175,7 @@ class AppWindow(QMainWindow):
         # clear the data struct
         self.data.clear()
 
-        h = hash.Hash(input)
+        h = hash.Hash(input, load_from_file=load_file)
         self.ui.outputText.setText(h.upper())
 
         self.data = mpu.io.read("loop.json")
