@@ -208,11 +208,14 @@ class AppWindow(QMainWindow):
         self.ui.aBufferVal.setText(str(hex(buffers[0])))
         self.ui.bBufferVal.setText(str(hex(buffers[1])))
         self.ui.cBufferVal.setText(str(hex(buffers[2])))
-        self.ui.dBufferVal.setText(str(hex(buffers[3])))
+        self.ui.dBufferVal.setText(str(hex(buffers[3])))        
         self.ui.fBufferVal.setText(str(f))
         self.ui.gBufferVal.setText(str(g))
         self.ui.workingWordText.setText(str(word).upper())
         self.ui.loopCountLabel.setText('Loop Count: ' + str(id))
+
+        if len(buffers) == 5:
+            self.ui.eBufferVal.setText(str(hex(buffers[4])))
 
     def hashSelectionChanged(self):
         if self.getSelectedHash() == "md5":

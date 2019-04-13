@@ -16,7 +16,7 @@
         <TextBox x:Name="bufferD" HorizontalAlignment="Left" Height="23" Margin="206,91,0,0" TextWrapping="Wrap" Text="FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" VerticalAlignment="Top" Width="359" FontFamily="Consolas" FontSize="20" Foreground="#FFAE9D64"/>
         <TextBox x:Name="output" HorizontalAlignment="Left" Height="23" Margin="206,10,0,0" TextWrapping="Wrap" Text="FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" VerticalAlignment="Top" Width="359" FontFamily="Consolas" FontSize="20" Grid.Row="1"/>
 
-        <Label Content="output" HorizontalAlignment="Left" Margin="155,11,0,0" VerticalAlignment="Top" Height="24" Grid.Row="1" Foreground="White"/>
+        <Label Content="F" HorizontalAlignment="Left" Margin="170,9,0,0" VerticalAlignment="Top" Height="24" Grid.Row="1" Foreground="Black" FontWeight="Bold"/>
 
 
         <Image x:Name="functionImage" HorizontalAlignment="Left" Height="276" Margin="139,48,0,0" VerticalAlignment="Top" Width="465" Source="res/H.png" Grid.Row="1"/>
