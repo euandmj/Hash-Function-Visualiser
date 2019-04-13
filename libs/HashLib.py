@@ -50,7 +50,6 @@ class MD5:
         assert isinstance(msg, str), "MD5 function expected string, received %s" % type(msg)
 
         if load_from_file:
-            print("reee")
             plaintext = msg
             # load the file using the msg as directory
             msg = loadFromFile(msg)
