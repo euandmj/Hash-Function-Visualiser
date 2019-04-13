@@ -17,11 +17,11 @@ namespace Visualiser
     /// <summary>
     /// Interaction logic for FunctionWindow.xaml
     /// </summary>
-    public partial class FunctionWindow : Window
+    public partial class MD5FunctionWindow : Window
     {
         private Int64 B, C, D, F;
 
-        public FunctionWindow(int i, Int64[] buffers, Int64 F)
+        public MD5FunctionWindow(int i, Int64[] buffers, Int64 F)
         {
             InitializeComponent();
 

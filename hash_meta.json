@@ -27,5 +27,17 @@
             "14": "0x6fa87e4f,0xfe2ce6e0,0xa3014314,0x4e0811a1",
             "15": "0xf7537e82,0xbd3af235,0x2ad7d2bb,0xeb86d391"
         }
+    },
+    "SHA1":{
+        "Digest": "160 bit",
+        "Block": "512 bit",
+        "Rounds": "80",
+        "Registers":{
+            "A": "0x67452301",
+            "B": "0xEFCDAB89",
+            "C": "0x98BADCFE",
+            "D": "0x10325476",
+            "E": "0xC3D2E1F0"
+        }
     }
 }

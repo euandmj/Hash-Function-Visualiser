@@ -2,15 +2,16 @@ import sys
 import os
 import mpu.io
 import psutil
+import subprocess
 import mpu.io
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QFileDialog, QTableWidgetItem
 from window import Ui_MainWindow
 from libs.HashLib import MD5, SHA1
 
-def openFile(file):
+def openFile(file, args):
     try:
-        os.startfile(file)
+        subprocess.Popen([file, args])
     except FileNotFoundError:
         print("the file %s was not found?" % (file))
     except Exception as e:
@@ -86,12 +87,25 @@ class AppWindow(QMainWindow):
 
         return QMainWindow.eventFilter(self, source, event)
 
+    def getSelectedHash(self):
+        if self.ui.hashCombo.currentIndex() == 0:
+            return "md5"
+        else:
+            return "sha1"
+
     def hashButton_Clicked(self):
-        #read in the text and send the ascii encoded byte array to the md5 function 
+        #read in the text and send the ascii encoded byte array to the md5 function
         msg = str(self.ui.hashInput.text())
         # msg = bytes(msg, encoding="utf-8")
 
-        self.runHash(msg)
+        if self.getSelectedHash() == "md5":
+            # md5 selected
+            m = MD5()
+        elif self.getSelectedHash() == "sha1":
+            # sha1 selected
+            m = SHA1()
+        
+        self.runHash(msg, m)
         # set input binary text field
         #s = ''.join("{:02x}".format(ord(x)) for x in txt)
         s = ''.join(hex(ord(x))[2:] for x in self.ui.hashInput.text())
@@ -100,9 +114,14 @@ class AppWindow(QMainWindow):
 
     def loadFileButton_Clicked(self):
         filen = QFileDialog.getOpenFileName(self, "Open File", "/home")
+
+        if self.getSelectedHash() == "md5":
+            h = MD5()
+        else:
+            h = SHA1()
         # check if a file was chosen and note qdialog exited
         if filen[1] != '':
-            self.runHash(filen, True)
+            self.runHash(filen[0], h, load_file=True)
 
     def exportButton_Clicked(self):
         pass    
@@ -112,8 +131,9 @@ class AppWindow(QMainWindow):
         if os.name != 'nt':
             self.ui.launchVisualiserError.show()
             return
-        
-        if len(self.data) ==  0:
+
+        # empty data - hash has not been ran yet        
+        if not self.data:
             return
 
         # get the current index of the scrollbar
@@ -132,9 +152,8 @@ class AppWindow(QMainWindow):
             os.remove(filen)
         mpu.io.write(filen, visualdata)
 
-
-        openFile("wpf_visual\Visualiser\Visualiser\\bin\Debug\Visualiser.exe")
-        #self.openFile("Visualiser.exe")
+        #subprocess.Popen(["wpf_visual\Visualiser\Visualiser\\bin\Debug\Visualiser.exe", self.getSelectedHash()])
+        openFile("wpf_visual\Visualiser\Visualiser\\bin\Debug\Visualiser.exe", self.getSelectedHash())
     
     def killChildPs(self):
         ps = psutil.Process()
@@ -146,7 +165,7 @@ class AppWindow(QMainWindow):
     def launchConversionTool(self):
         pass
 
-    def runHash(self, input, load_file=False):
+    def runHash(self, input, hash, load_file=False):
         # wait cursor
 
         # first reset the ui
@@ -156,8 +175,7 @@ class AppWindow(QMainWindow):
         # clear the data struct
         self.data.clear()
 
-        M = MD5()
-        h = M.Hash(input, load_file)
+        h = hash.Hash(input)
         self.ui.outputText.setText(h.upper())
 
         self.data = mpu.io.read("loop.json")
@@ -197,25 +215,45 @@ class AppWindow(QMainWindow):
         self.ui.loopCountLabel.setText('Loop Count: ' + str(id))
 
     def hashSelectionChanged(self):
-        comboIndex = self.ui.hashCombo.currentIndex()
-
-        if comboIndex == 0:
+        if self.getSelectedHash() == "md5":
             # md5 chosen
             # update constants area
             self.updateConstantRegion(self.metadata["MD5"])
 
-        elif comboIndex == 1:
+        elif self.getSelectedHash() == "sha1":
             # sha1 chosen
-            pass
+            self.updateConstantRegion(self.metadata["SHA1"])
 
     def updateConstantRegion(self, data):
-        self.ui.sineTable.setRowCount(16)
-        self.ui.sineTable.setColumnCount(2)
+
+        # load sine table from data if valid
+        if "Sine Table" in data:
+            self.ui.sineTable.setVisible(True)
+            self.ui.sineTable.setRowCount(len(data["Sine Table"]))
+            self.ui.sineTable.setColumnCount(2)
         
-        from PyQt5.QtWidgets import QHeaderView
-        header = self.ui.sineTable.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+            from PyQt5.QtWidgets import QHeaderView
+            header = self.ui.sineTable.horizontalHeader()
+            header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            header.setSectionResizeMode(1, QHeaderView.ResizeToContents) 
+            
+            for i in range(16):
+                # row from the json file
+                row = data["Sine Table"][str(i)]
+                split = row.split(',')
+                self.ui.sineTable.setItem(i, 0, QTableWidgetItem(str(i).upper()))
+                self.ui.sineTable.setItem(i, 1, QTableWidgetItem(split[0]))
+
+                self.ui.sineTable.setItem(i+1, 0, QTableWidgetItem(str(i+1).upper()))
+                self.ui.sineTable.setItem(i+1, 1, QTableWidgetItem(split[1]))
+                
+                self.ui.sineTable.setItem(i+2, 0, QTableWidgetItem(str(i+2).upper()))
+                self.ui.sineTable.setItem(i+2, 1, QTableWidgetItem(split[2]))
+                
+                self.ui.sineTable.setItem(i+3, 0, QTableWidgetItem(str(i+3).upper()))
+                self.ui.sineTable.setItem(i+3, 1, QTableWidgetItem(split[3]))
+        else:
+            self.ui.sineTable.setVisible(False)
 
         # populate register data
         registers = data["Registers"]
@@ -224,22 +262,23 @@ class AppWindow(QMainWindow):
         self.ui.regCText.setText(registers["C"])
         self.ui.regDText.setText(registers["D"])
 
-
-        for i in range(16):
-            # row from the json file
-            row = data["Sine Table"][str(i)]
-            split = row.split(',')
-            self.ui.sineTable.setItem(i, 0, QTableWidgetItem(str(i).upper()))
-            self.ui.sineTable.setItem(i, 1, QTableWidgetItem(split[0]))
-
-            self.ui.sineTable.setItem(i+1, 0, QTableWidgetItem(str(i+1).upper()))
-            self.ui.sineTable.setItem(i+1, 1, QTableWidgetItem(split[1]))
+        if "E" in registers:
+            self.ui.blockText.setGeometry(QtCore.QRect(10, 140, 211, 101))
+            self.ui.label_21.setVisible(True)
+            self.ui.regEText.setVisible(True)
+            self.ui.regEText.setText(registers["E"])
+            self.ui.label_15.setVisible(True)
+            self.ui.eBufferVal.setVisible(True)
+        else:
+            self.ui.blockText.setGeometry(QtCore.QRect(10, 120, 211, 121))
+            self.ui.label_21.setVisible(False)
+            self.ui.regEText.setVisible(False)
+            self.ui.label_15.setVisible(False)
+            self.ui.eBufferVal.setVisible(False)
             
-            self.ui.sineTable.setItem(i+2, 0, QTableWidgetItem(str(i+2).upper()))
-            self.ui.sineTable.setItem(i+2, 1, QTableWidgetItem(split[2]))
-            
-            self.ui.sineTable.setItem(i+3, 0, QTableWidgetItem(str(i+3).upper()))
-            self.ui.sineTable.setItem(i+3, 1, QTableWidgetItem(split[3]))
+
+
+       
 
     def cursorMoved(self, x, y):
         if len(self.vector) == 1000:
@@ -258,7 +297,7 @@ class AppWindow(QMainWindow):
         for i in range(len(self.vector)):
             sum += self.vector[i][0] + self.vector[i][1]
 
-        self.runHash(str(sum))
+        self.runHash(str(sum), MD5())
         # reset the ui
         self.ui.mouseCaptureRegion.setTitle("")
         self.isTrackEnabled = False

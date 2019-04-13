@@ -41,12 +41,12 @@ namespace Visualiser
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MD5MainWindow : Window
     {
         const string filename = "curr_loop.json";
         private readonly Loop Loop; 
 
-        public MainWindow()
+        public MD5MainWindow()
         {
             InitializeComponent();
             string raw = string.Empty;
@@ -78,7 +78,7 @@ namespace Visualiser
 
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            FunctionWindow window = new FunctionWindow(Loop.I, Loop.Buffers, Loop.F);
+            MD5FunctionWindow window = new MD5FunctionWindow(Loop.I, Loop.Buffers, Loop.F);
             window.ShowDialog();
         }
 

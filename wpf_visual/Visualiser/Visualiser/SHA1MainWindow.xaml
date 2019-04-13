@@ -1,0 +1,49 @@
+﻿<Window x:Class="Visualiser.SHA1MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Visualiser"
+        mc:Ignorable="d"
+        Title="Visualiser Loop " Height="880" Width="741">
+    <Grid>
+        <Image HorizontalAlignment="Left" Height="871" VerticalAlignment="Top" Width="736" Margin="-1,0,-0.333,-20.333" Source="res/sha1_vertical.png" Stretch="Fill"/>
+
+        <Rectangle x:Name="mblock_click" HorizontalAlignment="Left" Height="38" Margin="506,370,0,0" VerticalAlignment="Top" Width="40" ToolTip="this is the integer value of the mutated message block" MouseDown="Mblock_click_MouseDown">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="Red" Opacity="0"/>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <Rectangle x:Name="tblock_click" HorizontalAlignment="Left" Height="38" Margin="164,376,0,0" VerticalAlignment="Top" Width="40" ToolTip="this is the sine value (see sine table)" MouseDown="Tblock_click_MouseDown">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="Red" Opacity="0"/>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <Rectangle x:Name="function_Click" HorizontalAlignment="Left" Height="38" Margin="523,179,0,0" VerticalAlignment="Top" Width="40" MouseDown="Rectangle_MouseDown">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="Red" Opacity="0"/>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Rectangle x:Name="sBlock_Click" HorizontalAlignment="Left" Height="43" Margin="506,534,0,0" VerticalAlignment="Top" Width="40" ToolTip="this is the round constant (see constants table)">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="Red" Opacity="0"/>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <TextBox x:Name="BufferA" HorizontalAlignment="Left" Height="14" Margin="86,89,0,0" TextWrapping="Wrap" Text="FFFFFFFF" VerticalAlignment="Top" Width="83" FontFamily="Consolas" FontSize="11" IsReadOnly="True" TextAlignment="Center" Background="White" SelectionBrush="#FF2B35D1" BorderBrush="{x:Null}" Foreground="#FF83AC60" FontWeight="Bold"/>
+        <TextBox x:Name="BufferB" HorizontalAlignment="Left" Height="14" Margin="206,89,0,0" TextWrapping="Wrap" Text="FFFFFFFF" VerticalAlignment="Top" Width="83" FontFamily="Consolas" FontSize="11" IsReadOnly="True" TextAlignment="Center" Background="White" SelectionBrush="#FF2B35D1" BorderBrush="{x:Null}" Foreground="#FF58B4E2" FontWeight="Bold"/>
+        <TextBox x:Name="BufferC" HorizontalAlignment="Left" Height="14" Margin="325,88,0,0" TextWrapping="Wrap" Text="FFFFFFFF" VerticalAlignment="Top" Width="83" FontFamily="Consolas" FontSize="11" IsReadOnly="True" TextAlignment="Center" Background="White" SelectionBrush="#FF2B35D1" BorderBrush="{x:Null}" Foreground="#FFFF1111" FontWeight="Bold"/>
+        <TextBox x:Name="BufferD" HorizontalAlignment="Left" Height="14" Margin="444,88,0,0" TextWrapping="Wrap" Text="FFFFFFFF" VerticalAlignment="Top" Width="83" FontFamily="Consolas" FontSize="11" IsReadOnly="True" TextAlignment="Center" Background="White" SelectionBrush="#FF2B35D1" BorderBrush="{x:Null}" Foreground="#FFDBAA2F" FontWeight="Bold"/>
+        <TextBox x:Name="debug" HorizontalAlignment="Left" Height="45" Margin="47,894,-53.667,-68.333" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="580"/>
+        <TextBox x:Name="BufferA_Copy" HorizontalAlignment="Left" Height="14" Margin="123,800,0,0" TextWrapping="Wrap" Text="FFFFFFFF" VerticalAlignment="Top" Width="83" FontFamily="Consolas" FontSize="11" IsReadOnly="True" TextAlignment="Center" Background="White" SelectionBrush="#FF2B35D1" BorderBrush="{x:Null}" Foreground="#FF83AC60" FontWeight="Bold"/>
+        <TextBox x:Name="BufferB_Copy" HorizontalAlignment="Left" Height="14" Margin="223,803,0,0" TextWrapping="Wrap" Text="FFFFFFFF" VerticalAlignment="Top" Width="83" FontFamily="Consolas" FontSize="11" IsReadOnly="True" TextAlignment="Center" Background="White" SelectionBrush="#FF2B35D1" BorderBrush="{x:Null}" Foreground="#FF58B4E2" FontWeight="Bold"/>
+        <TextBox x:Name="BufferC_Copy" HorizontalAlignment="Left" Height="14" Margin="323,803,0,0" TextWrapping="Wrap" Text="FFFFFFFF" VerticalAlignment="Top" Width="83" FontFamily="Consolas" FontSize="11" IsReadOnly="True" TextAlignment="Center" Background="White" SelectionBrush="#FF2B35D1" BorderBrush="{x:Null}" Foreground="#FFFF1111" FontWeight="Bold"/>
+        <TextBox x:Name="BufferD_Copy" HorizontalAlignment="Left" Height="14" Margin="421,803,0,0" TextWrapping="Wrap" Text="FFFFFFFF" VerticalAlignment="Top" Width="83" FontFamily="Consolas" FontSize="11" IsReadOnly="True" TextAlignment="Center" Background="White" SelectionBrush="#FF2B35D1" BorderBrush="{x:Null}" Foreground="#FFDBAA2F" FontWeight="Bold"/>
+        <TextBox x:Name="BufferE_Copy" HorizontalAlignment="Left" Height="14" Margin="519,803,0,0" TextWrapping="Wrap" Text="FFFFFFFF" VerticalAlignment="Top" Width="83" FontFamily="Consolas" FontSize="11" IsReadOnly="True" TextAlignment="Center" SelectionBrush="#FF2B35D1" BorderBrush="{x:Null}" Foreground="#FF834187" FontWeight="Bold" Background="White"/>
+        <TextBox x:Name="BufferE" HorizontalAlignment="Left" Height="14" Margin="564,89,0,0" TextWrapping="Wrap" Text="FFFFFFFF" VerticalAlignment="Top" Width="83" FontFamily="Consolas" FontSize="11" IsReadOnly="True" TextAlignment="Center" Background="White" SelectionBrush="#FF2B35D1" BorderBrush="{x:Null}" Foreground="#FF834187" FontWeight="Bold"/>
+
+
+    </Grid>
+</Window>

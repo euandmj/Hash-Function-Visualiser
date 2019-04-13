@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B1A95524-350E-4E66-9E19-774B00A13033}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>Visualiser</RootNamespace>
     <AssemblyName>Visualiser</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>Visualiser.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -59,11 +59,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="FunctionWindow.xaml">
+    <Page Include="SHA1FunctionWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MD5FunctionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="SHA1MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MD5MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -71,15 +79,22 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FunctionWindow.xaml.cs">
-      <DependentUpon>FunctionWindow.xaml</DependentUpon>
+    <Compile Include="SHA1FunctionWindow.xaml.cs">
+      <DependentUpon>SHA1FunctionWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="MD5FunctionWindow.xaml.cs">
+      <DependentUpon>MD5FunctionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SHA1MainWindow.xaml.cs">
+      <DependentUpon>SHA1MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MD5MainWindow.xaml.cs">
+      <DependentUpon>MD5MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -122,6 +137,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="res\md5_vertical.png" />
+    <Resource Include="res\sha1_vertical.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\shaF.png" />
+    <Resource Include="res\shaG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\shaH.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

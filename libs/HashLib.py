@@ -3,18 +3,28 @@ import math
 import os
 import psutil
 import mpu.io
+from struct import unpack
 
-MASK_8bit = 0xFFFFFFFF
-MASK_32bit = 0xFFFFFFFFFFFFFFFF
+BITMASK_8 = 0xFFFFFFFF
+BITMASK_32 = 0xFFFFFFFFFFFFFFFF
 
-# bitshift left
+# bitshift b left by n
 def leftrotate(b, n):
-    b &= MASK_8bit
-    return ((b << n) | (b >> (32 - n))) & MASK_8bit
+    b &= BITMASK_8
+    return ((b << n) | (b >> (32 - n))) & BITMASK_8
     
 def toHex(digest):
     raw = digest.to_bytes(16, byteorder='little')
     return '{:032x}'.format(int.from_bytes(raw, byteorder='big'))
+
+def loadFromFile(filepath):
+    try:
+        with open(filepath, 'rb') as f:
+            return f.read()
+    except FileNotFoundError:
+        print("file not found\n%s" % filepath)
+    except Exception as e:
+        print(e)
 
 class MD5:
     def __init__(self):
@@ -22,7 +32,7 @@ class MD5:
                                5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
                                4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
                                6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21]
-        self.T = [int(abs(math.sin(i + 1)) * 2**32) & MASK_8bit for i in range(64)]
+        self.T = [int(abs(math.sin(i + 1)) * 2**32) & BITMASK_8 for i in range(64)]
         self.a0 = 0x67452301
         self.b0 = 0xefcdab89
         self.c0 = 0x98badcfe
@@ -37,13 +47,12 @@ class MD5:
         mpu.io.write(filepath, data)
 
     def Hash(self, msg, load_from_file=False, write_to_file=True):
-        assert((msg is str) == False), "MD5 function expected bytes, received %s" % (type(msg))
+        assert isinstance(msg, str), "MD5 function expected string, received %s" % type(msg)
 
         if load_from_file:
             plaintext = msg
             # load the file using the msg as directory
-            with open(msg[0], "rb") as f:
-                msg = f.read()
+            msg = loadFromFile(msg)
         else:
             # parse ascii to bytes
             plaintext = msg
@@ -113,7 +122,7 @@ class MD5:
                 M = int.from_bytes(chunk[4*g: 4*g+4], byteorder='little')                           
 
                 rota = A + f + self.T[i] + M
-                bb = (B + leftrotate(rota, self.rotate_amounts[i])) & MASK_8bit
+                bb = (B + leftrotate(rota, self.rotate_amounts[i])) & BITMASK_8
                 A = D
                 D = C
                 C = B
@@ -141,10 +150,10 @@ class MD5:
                 }
                 self.json_data.append(data)
                     
-            a0 = (a0 + A) & MASK_8bit
-            b0 = (b0 + B) & MASK_8bit
-            c0 = (c0 + C) & MASK_8bit
-            d0 = (d0 + D) & MASK_8bit
+            a0 = (a0 + A) & BITMASK_8
+            b0 = (b0 + B) & BITMASK_8
+            c0 = (c0 + C) & BITMASK_8
+            d0 = (d0 + D) & BITMASK_8
 
         # append finally orignal message, padded block and the result
         self.json_data.insert(0, {
@@ -166,38 +175,48 @@ class SHA1:
         self.H2 = 0x98BADCFE
         self.H3 = 0x10325476
         self.H4 = 0xC3D2E1F0
+        self.json_data = []
     
     def writeJsonFile(self):
-        pass
+        filepath = "loop.json"
+        # attempt to fix bug of only overwriting once per program instance
+        if os.path.isfile(filepath):
+            os.remove(filepath)
+        mpu.io.write(filepath, self.json_data)
 
-    def Aux_Func(self, t, B, C, D):
+    def F(self, t, B, C, D):
         if 0 <= t <= 19:
             return (B & C) | (~B & D)
-        elif 20 <= t <= 39:
+        if 20 <= t <= 39:
             return B ^ C ^ D
-        elif 40 <= t <= 59:
+        if 40 <= t <= 59:
             return (B & C) | (B & D) | (C & D)
-        else:
+        if 60 <= t <= 79:
             return B ^ C ^ D
+
+        print("Error sha1 aux func overflow")
+        return 0
     
     def K(self, t):
         if 0 <= t <= 19:
             return 0x5A827999
-        elif 20 <= t <= 39:
+        if 20 <= t <= 39:
             return 0x6ED9EBA1
-        elif 40 <= t <= 59:
+        if 40 <= t <= 59:
             return 0x8F1BBCDC
-        else:
+        if 60 <= t <= 79:
             return 0xCA62C1D6
+
+        print("Error sha1 K func overflow")
+        return 0
 
     def Hash(self, msg, load_from_file=False, write_to_file=True):
         assert((msg is str) == False), "MD5 function expected bytes, received %s" % (type(msg))
         
         if load_from_file:
             plaintext = msg
-            # load the file using the msg as directory
-            with open(msg[0], "rb") as f:
-                msg = f.read()
+            # load the file using the msg as directory            
+            msg = loadFromFile(msg[0])
         else:
             # parse ascii to bytes
             plaintext = msg
@@ -208,7 +227,7 @@ class SHA1:
         H2 = self.H2
         H3 = self.H3
         H4 = self.H4
-       
+        count = 0
         msg = bytearray(msg)
 
         length = (8 * len(msg)) & 0xFFFFFFFFFFFFFFFF
@@ -219,18 +238,83 @@ class SHA1:
             msg.append(0)
 
         msg += length.to_bytes(8, byteorder='little')
-
+        
+        # RFC method 1
+        # parse msg[i] into 16 32 bit words (512 block)
         for W in range(0, len(msg), 64):
             chunk = msg[W : W + 64]
 
             w = [0] * 80
-
+            #  a. Divide M(i) into 16 words W(0), W(1), ... , W(15), where W(0)
+            #   is the left-most word.
             for i in range(16):
-                w[i] = int.from_bytes(chunk[4*i: 4*i+4], byteorder='little')
+                #w[i] = int.from_bytes(chunk[4*i: 4*i+4], byteorder='little')
+                w[i] = unpack(b'>I', chunk[i * 4:i * 4 + 4])[0]
 
+            #   b.
             for t in range(16, 80):
                 w[t] = leftrotate((w[t-3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16]), 1)
+            
+            a, b, c, d, e = H0, H1, H2, H3, H4
 
+            for t in range(80):
+                f = self.F(t, b, c, d)
+                k = self.K(t)
+                temp = (leftrotate(a, 5) + f + e + w[t] + k) & BITMASK_8
+
+                # json data
+                vdata = {
+                    "i": t,
+                    "Buffers": [a,b,c,d,e],
+                    "F": f,
+                    "W": 0,
+                    "K": k
+                }            
+                e = d
+                d = c
+                c = leftrotate(b, 30)
+                b = a
+                a = temp
+
+                # final json data
+                data = {
+                    "Loop": {
+                        "Id": count, 
+                        "Word": ''.join('{:02x}'.format(b) for b in chunk),
+                        "Buffers": [a,b,c,d,e],
+                        "f": f, 
+                        "g": k
+                    },
+                    "VisualData": {
+                        "i": vdata["i"],
+                        "Buffers": vdata["Buffers"],
+                        "BuffersNew": [a,b,c,d,e],
+                        "F": vdata["F"],
+                        "W": ''.join('{:02x}'.format(b) for b in w),
+                        "K:": k
+                    }
+                }
+                self.json_data.append(data)
+                count += 1
+
+            H0 = (H0 + a) & BITMASK_8
+            H1 = (H1 + b) & BITMASK_8
+            H2 = (H2 + c) & BITMASK_8
+            H3 = (H3 + d) & BITMASK_8
+            H4 = (H4 + e) & BITMASK_8
+        
+
+        # append json header
+        self.json_data.insert(0, {
+            "Message": plaintext, 
+            "Block": ''.join('{:02x}'.format(b) for b in msg),
+            "Result": '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)
+        })
+        # write the json
+        if write_to_file:
+            self.writeJsonFile()
+        
+        
         #It was also shown that for the rounds 32–79 the computation of:
         # w[i] = (w[i-3] xor w[i-8] xor w[i-14] xor w[i-16]) leftrotate 1
         # can be replaced with:
@@ -239,27 +323,16 @@ class SHA1:
         # by removing the dependency of w[i] on w[i-3],
         # allows efficient SIMD implementation with a vector length of 4 like x86 SSE instructions.        
 
-        a, b, c, d, e = H0, H1, H2, H3, H4
 
-        for t in range(80):
-            f = self.Aux_Func(t, b, c, d)
-            k = self.K(t)
-
-            temp = (leftrotate(a, 5) + f + e + w[t] + k) & MASK_8bit
-            
-            e = d
-            d = c
-            c = leftrotate(b, 30)
-            b = a
-            a = temp
-
-        H0 = (H0 + a) & MASK_8bit
-        H1 = (H1 + b) & MASK_8bit
-        H2 = (H2 + c) & MASK_8bit
-        H3 = (H3 + d) & MASK_8bit
-        H4 = (H4 + e) & MASK_8bit
+        
     
         # After processing M(n), the message digest is the 160-bit string
         # represented by the 5 words
         return '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)
         #return toHex(sum(val << (32 * i) for i, val in enumerate([H0, H1, H2, H3, H4])))
+
+
+if __name__ == "__main__":
+    s = SHA1()
+    b = s.Hash("foo", write_to_file=False)
+    print(b)
