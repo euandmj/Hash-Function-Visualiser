@@ -5,7 +5,7 @@ import psutil
 import subprocess
 import mpu.io
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QFileDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QFileDialog, QHeaderView, QTableWidgetItem
 from window import Ui_MainWindow
 from libs.HashLib import MD5, SHA1
 
@@ -79,6 +79,7 @@ class AppWindow(QMainWindow):
 
         self.ui.launchVisualiserError.hide()
         self.ui.padding_LeftArrow.setEnabled(False)
+        self.ui.tabWidget.setCurrentIndex(1)
 
 
     def eventFilter(self, source, event):
@@ -91,15 +92,15 @@ class AppWindow(QMainWindow):
                 self.cursorMoved(pos.x(), pos.y())
         
         if event.type() == QtCore.QEvent.MouseButtonPress:
-            if (event.buttons() == QtCore.Qt.LeftButton and 
+            if (event.buttons() == QtCore.Qt.LeftButton and
                 source == self.ui.padding_LeftArrow and
-                self.ui.padding_LeftArrow.isEnabled() == True):
+                self.ui.padding_LeftArrow.isEnabled()):
                 self.paddingArrow_Clicked(0)
         
         if event.type() == QtCore.QEvent.MouseButtonPress:
             if (event.buttons() == QtCore.Qt.LeftButton and
                     source == self.ui.padding_RightArrow and
-                    self.ui.padding_RightArrow.isEnabled() == True):
+                    self.ui.padding_RightArrow.isEnabled()):
                 self.paddingArrow_Clicked(1)
 
 
@@ -255,7 +256,6 @@ class AppWindow(QMainWindow):
             self.ui.sineTable.setRowCount(len(data["Sine Table"]))
             self.ui.sineTable.setColumnCount(2)
         
-            from PyQt5.QtWidgets import QHeaderView
             header = self.ui.sineTable.horizontalHeader()
             header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
             header.setSectionResizeMode(1, QHeaderView.ResizeToContents) 
@@ -275,6 +275,19 @@ class AppWindow(QMainWindow):
                 
                 self.ui.sineTable.setItem(i+3, 0, QTableWidgetItem(str(i+3).upper()))
                 self.ui.sineTable.setItem(i+3, 1, QTableWidgetItem(split[3]))
+        elif "Constants" in data:
+            consts = data["Constants"]
+            self.ui.sineTable.setVisible(True)
+            self.ui.sineTable.setRowCount(len(consts))
+            self.ui.sineTable.setColumnCount(2)
+
+            header = self.ui.sineTable.horizontalHeader()
+            header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+
+            for i in range(len(consts)):
+                self.ui.sineTable.setItem(i, 0, QTableWidgetItem(str(i + 1)))
+                self.ui.sineTable.setItem(i, 1, QTableWidgetItem(str(consts[str(i)])))
         else:
             self.ui.sineTable.setVisible(False)
 
@@ -298,9 +311,11 @@ class AppWindow(QMainWindow):
             self.ui.regEText.setVisible(False)
             self.ui.label_15.setVisible(False)
             self.ui.eBufferVal.setVisible(False)
-          
+        
+       
+
     def updatePaddingRegion(self):
-        # called upon hash. 
+        # called upon hash and arrow click
         # depending on index, write the correct key-value to text box
         if self.paddingIndex == 0:
             self.ui.padding_BlockText.setText(
@@ -322,6 +337,8 @@ class AppWindow(QMainWindow):
         
 
     def paddingArrow_Clicked(self, source):
+        if not self.data:
+            return
         # delta the counter
         self.paddingIndex = self.paddingIndex + 1 if source == 1 else self.paddingIndex - 1
         # disable/enable buttons based on current index

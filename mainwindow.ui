@@ -211,10 +211,10 @@
        <widget class="QTableWidget" name="sineTable">
         <property name="geometry">
          <rect>
-          <x>230</x>
-          <y>30</y>
-          <width>151</width>
-          <height>211</height>
+          <x>200</x>
+          <y>50</y>
+          <width>181</width>
+          <height>191</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -383,6 +383,22 @@
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#834187;&quot;&gt;Register E&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
+       <widget class="QLabel" name="tableLabel">
+        <property name="geometry">
+         <rect>
+          <x>230</x>
+          <y>30</y>
+          <width>131</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; text-decoration: underline;&quot;&gt;Constants&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -413,7 +429,7 @@
          <property name="geometry">
           <rect>
            <x>140</x>
-           <y>30</y>
+           <y>60</y>
            <width>581</width>
            <height>71</height>
           </rect>
@@ -432,7 +448,7 @@
          <property name="geometry">
           <rect>
            <x>100</x>
-           <y>110</y>
+           <y>140</y>
            <width>641</width>
            <height>141</height>
           </rect>
@@ -445,7 +461,7 @@
          <property name="geometry">
           <rect>
            <x>280</x>
-           <y>270</y>
+           <y>300</y>
            <width>22</width>
            <height>17</height>
           </rect>
@@ -461,7 +477,7 @@
          <property name="geometry">
           <rect>
            <x>570</x>
-           <y>270</y>
+           <y>300</y>
            <width>22</width>
            <height>17</height>
           </rect>
@@ -477,7 +493,7 @@
          <property name="geometry">
           <rect>
            <x>310</x>
-           <y>270</y>
+           <y>300</y>
            <width>251</width>
            <height>61</height>
           </rect>

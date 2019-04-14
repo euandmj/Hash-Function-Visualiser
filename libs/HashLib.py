@@ -79,15 +79,15 @@ class MD5:
         count = 0
 
         msg = bytearray(msg)
-        #rawBytes = msg
         header["Message"] = plaintext
         header["RawBytes"] = ''.join('{:b}'.format(b) for b in msg)
         length = (8 * len(msg)) & 0xFFFFFFFFFFFFFFFF
-        rawLen = length
+        
         # add 1
         msg.append(0x80)
         header["RawBytes1"] = ''.join('{:b}'.format(b) for b in msg)
 
+        # add 0s
         while len(msg) % 64 != 56:
             msg.append(0)
         header["RawBytes0"] = ''.join('{:b}'.format(b) for b in msg)
@@ -169,17 +169,7 @@ class MD5:
             b0 = (b0 + B) & BITMASK_8
             c0 = (c0 + C) & BITMASK_8
             d0 = (d0 + D) & BITMASK_8
-
-        # append finally orignal message, padded block and the result
-        # self.json_data.insert(0, {
-        #     "Message": plaintext,
-        #     "RawBytes": ''.join('{:b}'.format(b) for b in rawBytes),
-        #     "RawBytes1": ''.join('{:b}'.format(b) for b in rawBytesWith1),
-        #     "RawBytes0": ''.join('{:b}'.format(b) for b in rawbytesWith0),
-        #     "Len": "{0:b}".format(rawLen),
-        #     "Block": ''.join('{:b}'.format(b) for b in msg),
-        #     "Result": toHex(sum(val << (32 * i) for i, val in enumerate([a0, b0, c0, d0])))
-        # })
+        
         self.json_data.insert(0, header)
 
         if write_to_file:
@@ -243,7 +233,7 @@ class SHA1:
             # parse ascii to bytes
             plaintext = msg
             msg = bytes(msg, encoding="utf-8")
-
+        header = {}
         H0 = self.H0
         H1 = self.H1
         H2 = self.H2
@@ -252,14 +242,24 @@ class SHA1:
         count = 0
         msg = bytearray(msg)
 
+        header["Message"] = plaintext
+        header["RawBytes"] = ''.join('{:b}'.format(b) for b in msg)
+
         length = (8 * len(msg)) & 0xFFFFFFFFFFFFFFFF
 
         # pad
+        # add 1
         msg.append(0x80)
+        header["RawBytes1"] = ''.join('{:b}'.format(b) for b in msg)
+        
+        # add 0s
         while len(msg) % 64 != 56:
             msg.append(0)
-
+        header["RawBytes0"] = ''.join('{:b}'.format(b) for b in msg)
+        
+        # add length
         msg += length.to_bytes(8, byteorder='little')
+        header["Block"] = ''.join('{:b}'.format(b) for b in msg)
 
         # RFC method 1
         # parse msg[i] into 16 32 bit words (512 block)
@@ -326,12 +326,7 @@ class SHA1:
             H3 = (H3 + d) & BITMASK_8
             H4 = (H4 + e) & BITMASK_8
 
-        # append json header
-        self.json_data.insert(0, {
-            "Message": plaintext,
-            "Block": ''.join('{:02x}'.format(b) for b in msg),
-            "Result": '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)
-        })
+        self.json_data.insert(0, header)
         # write the json
         if write_to_file:
             self.writeJsonFile()
