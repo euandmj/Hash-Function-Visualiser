@@ -9,13 +9,17 @@ BITMASK_8 = 0xFFFFFFFF
 BITMASK_32 = 0xFFFFFFFFFFFFFFFF
 
 # bitshift b left by n
+
+
 def leftrotate(b, n):
     b &= BITMASK_8
     return ((b << n) | (b >> (32 - n))) & BITMASK_8
-    
+
+
 def toHex(digest):
     raw = digest.to_bytes(16, byteorder='little')
     return '{:032x}'.format(int.from_bytes(raw, byteorder='big'))
+
 
 def loadFromFile(filepath):
     try:
@@ -26,19 +30,21 @@ def loadFromFile(filepath):
     except Exception as e:
         print(e)
 
+
 class MD5:
     def __init__(self):
         self.rotate_amounts = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
                                5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
                                4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
                                6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21]
-        self.T = [int(abs(math.sin(i + 1)) * 2**32) & BITMASK_8 for i in range(64)]
+        self.T = [int(abs(math.sin(i + 1)) * 2**32)
+                  & BITMASK_8 for i in range(64)]
         self.a0 = 0x67452301
         self.b0 = 0xefcdab89
         self.c0 = 0x98badcfe
         self.d0 = 0x10325476
         self.json_data = []
-        
+
     def writeJsonFile(self, data):
         filepath = "loop.json"
         # attempt to fix bug of only overwriting once per program instance
@@ -47,7 +53,8 @@ class MD5:
         mpu.io.write(filepath, data)
 
     def Hash(self, msg, load_from_file=False, write_to_file=True):
-        assert isinstance(msg, str), "MD5 function expected string, received %s" % type(msg)
+        assert isinstance(
+            msg, str), "MD5 function expected string, received %s" % type(msg)
 
         if load_from_file:
             plaintext = msg
@@ -59,10 +66,11 @@ class MD5:
             msg = bytes(msg, encoding="utf-8")
 
         self.json_data.clear()
+        header = {}
 
         # md5 buffers
-        # moved into function due to 
-        # weird runtime error of variable usage before initialisation 
+        # moved into function due to
+        # weird runtime error of variable usage before initialisation
         a0 = self.a0
         b0 = self.b0
         c0 = self.c0
@@ -71,18 +79,25 @@ class MD5:
         count = 0
 
         msg = bytearray(msg)
+        #rawBytes = msg
+        header["Message"] = plaintext
+        header["RawBytes"] = ''.join('{:b}'.format(b) for b in msg)
         length = (8 * len(msg)) & 0xFFFFFFFFFFFFFFFF
+        rawLen = length
         # add 1
         msg.append(0x80)
+        header["RawBytes1"] = ''.join('{:b}'.format(b) for b in msg)
 
-        while len(msg) % 64 != 56: 
+        while len(msg) % 64 != 56:
             msg.append(0)
+        header["RawBytes0"] = ''.join('{:b}'.format(b) for b in msg)
 
         msg += length.to_bytes(8, byteorder='little')
+        header["Block"] = ''.join('{:b}'.format(b) for b in msg)
 
         # for each 64 bit chunk
         for j in range(0, len(msg), 64):
-            chunk = msg[j : j + 64]
+            chunk = msg[j: j + 64]
 
             A = a0
             B = b0
@@ -108,7 +123,7 @@ class MD5:
                     # aux func I
                     f = C ^ (B | ~D)
                     g = (7 * i) % 16
-                #calc rotatory
+                # calc rotatory
 
                 # visual data save point
                 vdata = {
@@ -117,9 +132,9 @@ class MD5:
                     "F": f,
                     "T": self.T[i]
                 }
-                
+
                 # int value from the 4 byte chunk
-                M = int.from_bytes(chunk[4*g: 4*g+4], byteorder='little')                           
+                M = int.from_bytes(chunk[4*g: 4*g+4], byteorder='little')
 
                 rota = A + f + self.T[i] + M
                 bb = (B + leftrotate(rota, self.rotate_amounts[i])) & BITMASK_8
@@ -131,14 +146,14 @@ class MD5:
                 # construct json file
                 data = {
                     "Loop": {
-                        "Id": count,                        
+                        "Id": count,
                         "Word": ''.join('{:02x}'.format(b) for b in chunk),
                         "Buffers": [A, B, C, D],
                         "Rotate": self.rotate_amounts[i],
                         "f": f,
                         "g": g
                     },
-                    "VisualData":{
+                    "VisualData": {
                         "i": vdata["i"],
                         "Buffers": vdata["Buffers"],
                         "BuffersNew": [A, B, C, D],
@@ -149,23 +164,29 @@ class MD5:
                     }
                 }
                 self.json_data.append(data)
-                    
+
             a0 = (a0 + A) & BITMASK_8
             b0 = (b0 + B) & BITMASK_8
             c0 = (c0 + C) & BITMASK_8
             d0 = (d0 + D) & BITMASK_8
 
         # append finally orignal message, padded block and the result
-        self.json_data.insert(0, {
-            "Message": plaintext,
-            "Block": ''.join('{:02x}'.format(b) for b in msg),
-            "Result": toHex(sum(val << (32 * i) for i, val in enumerate([a0, b0, c0, d0])))
-        })
+        # self.json_data.insert(0, {
+        #     "Message": plaintext,
+        #     "RawBytes": ''.join('{:b}'.format(b) for b in rawBytes),
+        #     "RawBytes1": ''.join('{:b}'.format(b) for b in rawBytesWith1),
+        #     "RawBytes0": ''.join('{:b}'.format(b) for b in rawbytesWith0),
+        #     "Len": "{0:b}".format(rawLen),
+        #     "Block": ''.join('{:b}'.format(b) for b in msg),
+        #     "Result": toHex(sum(val << (32 * i) for i, val in enumerate([a0, b0, c0, d0])))
+        # })
+        self.json_data.insert(0, header)
 
         if write_to_file:
             self.writeJsonFile(self.json_data)
         # return the combination of the 4 buffers, converted to big endian hex
         return toHex(sum(val << (32 * i) for i, val in enumerate([a0, b0, c0, d0])))
+
 
 class SHA1:
     def __init__(self):
@@ -176,7 +197,7 @@ class SHA1:
         self.H3 = 0x10325476
         self.H4 = 0xC3D2E1F0
         self.json_data = []
-    
+
     def writeJsonFile(self):
         filepath = "loop.json"
         # attempt to fix bug of only overwriting once per program instance
@@ -196,7 +217,7 @@ class SHA1:
 
         print("Error sha1 aux func overflow")
         return 0
-    
+
     def K(self, t):
         if 0 <= t <= 19:
             return 0x5A827999
@@ -211,11 +232,12 @@ class SHA1:
         return 0
 
     def Hash(self, msg, load_from_file=False, write_to_file=True):
-        assert((msg is str) == False), "MD5 function expected bytes, received %s" % (type(msg))
-        
+        assert((msg is str) == False), "MD5 function expected bytes, received %s" % (
+            type(msg))
+
         if load_from_file:
             plaintext = msg
-            # load the file using the msg as directory            
+            # load the file using the msg as directory
             msg = loadFromFile(msg[0])
         else:
             # parse ascii to bytes
@@ -234,15 +256,15 @@ class SHA1:
 
         # pad
         msg.append(0x80)
-        while len(msg) % 64 != 56: 
+        while len(msg) % 64 != 56:
             msg.append(0)
 
         msg += length.to_bytes(8, byteorder='little')
-        
+
         # RFC method 1
         # parse msg[i] into 16 32 bit words (512 block)
         for W in range(0, len(msg), 64):
-            chunk = msg[W : W + 64]
+            chunk = msg[W: W + 64]
 
             w = [0] * 80
             #  a. Divide M(i) into 16 words W(0), W(1), ... , W(15), where W(0)
@@ -253,8 +275,9 @@ class SHA1:
 
             #   b.
             for t in range(16, 80):
-                w[t] = leftrotate((w[t-3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16]), 1)
-            
+                w[t] = leftrotate(
+                    (w[t-3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16]), 1)
+
             a, b, c, d, e = H0, H1, H2, H3, H4
 
             for t in range(80):
@@ -265,11 +288,11 @@ class SHA1:
                 # json data
                 vdata = {
                     "i": t,
-                    "Buffers": [a,b,c,d,e],
+                    "Buffers": [a, b, c, d, e],
                     "F": f,
                     "W": 0,
                     "K": k
-                }            
+                }
                 e = d
                 d = c
                 c = leftrotate(b, 30)
@@ -279,16 +302,16 @@ class SHA1:
                 # final json data
                 data = {
                     "Loop": {
-                        "Id": count, 
+                        "Id": count,
                         "Word": ''.join('{:02x}'.format(b) for b in chunk),
-                        "Buffers": [a,b,c,d,e],
-                        "f": f, 
+                        "Buffers": [a, b, c, d, e],
+                        "f": f,
                         "g": k
                     },
                     "VisualData": {
                         "i": vdata["i"],
                         "Buffers": vdata["Buffers"],
-                        "BuffersNew": [a,b,c,d,e],
+                        "BuffersNew": [a, b, c, d, e],
                         "F": vdata["F"],
                         "W": ''.join('{:02x}'.format(b) for b in w),
                         "K:": k
@@ -302,34 +325,29 @@ class SHA1:
             H2 = (H2 + c) & BITMASK_8
             H3 = (H3 + d) & BITMASK_8
             H4 = (H4 + e) & BITMASK_8
-        
 
         # append json header
         self.json_data.insert(0, {
-            "Message": plaintext, 
+            "Message": plaintext,
             "Block": ''.join('{:02x}'.format(b) for b in msg),
             "Result": '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)
         })
         # write the json
         if write_to_file:
             self.writeJsonFile()
-        
-        
-        #It was also shown that for the rounds 32–79 the computation of:
+
+        # It was also shown that for the rounds 32–79 the computation of:
         # w[i] = (w[i-3] xor w[i-8] xor w[i-14] xor w[i-16]) leftrotate 1
         # can be replaced with:
         # w[i] = (w[i-6] xor w[i-16] xor w[i-28] xor w[i-32]) leftrotate 2
         # This transformation keeps all operands 64-bit aligned and,
         # by removing the dependency of w[i] on w[i-3],
-        # allows efficient SIMD implementation with a vector length of 4 like x86 SSE instructions.        
+        # allows efficient SIMD implementation with a vector length of 4 like x86 SSE instructions.
 
-
-        
-    
         # After processing M(n), the message digest is the 160-bit string
         # represented by the 5 words
         return '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)
-        #return toHex(sum(val << (32 * i) for i, val in enumerate([H0, H1, H2, H3, H4])))
+        # return toHex(sum(val << (32 * i) for i, val in enumerate([H0, H1, H2, H3, H4])))
 
 
 if __name__ == "__main__":

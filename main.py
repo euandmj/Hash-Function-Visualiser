@@ -27,7 +27,15 @@ def foo():
 
 
 class AppWindow(QMainWindow):
+    # member variables
     data = []
+    paddingIndex = 0  
+    vector = [int, int] * 1000
+    isTrackEnabled = False
+    paddingDict  = {}
+    # load hash meta file
+    metadata = mpu.io.read("hash_meta.json")
+
 
     def __init__(self):
         # python version calls
@@ -36,11 +44,7 @@ class AppWindow(QMainWindow):
         else:
             super(AppWindow, self).__init__()
 
-        # member variables
-        self.vector = [int, int] * 1000
-        self.isTrackEnabled = False
-        # load hash meta file
-        self.metadata = mpu.io.read("hash_meta.json")
+      
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -71,9 +75,10 @@ class AppWindow(QMainWindow):
         # css
         with open("res/darkorange.stylesheet.css", "r") as f:
             qstr = f.read()
-            self.setStyleSheet(qstr)        
+            self.setStyleSheet(qstr)
 
         self.ui.launchVisualiserError.hide()
+        self.ui.padding_LeftArrow.setEnabled(False)
 
 
     def eventFilter(self, source, event):
@@ -84,6 +89,19 @@ class AppWindow(QMainWindow):
                     source == self.ui.mouseCaptureRegion):
                 pos = event.pos()
                 self.cursorMoved(pos.x(), pos.y())
+        
+        if event.type() == QtCore.QEvent.MouseButtonPress:
+            if (event.buttons() == QtCore.Qt.LeftButton and 
+                source == self.ui.padding_LeftArrow and
+                self.ui.padding_LeftArrow.isEnabled() == True):
+                self.paddingArrow_Clicked(0)
+        
+        if event.type() == QtCore.QEvent.MouseButtonPress:
+            if (event.buttons() == QtCore.Qt.LeftButton and
+                    source == self.ui.padding_RightArrow and
+                    self.ui.padding_RightArrow.isEnabled() == True):
+                self.paddingArrow_Clicked(1)
+
 
         return QMainWindow.eventFilter(self, source, event)
 
@@ -108,9 +126,9 @@ class AppWindow(QMainWindow):
         self.runHash(msg, m)
         # set input binary text field
         #s = ''.join("{:02x}".format(ord(x)) for x in txt)
-        s = ''.join(hex(ord(x))[2:] for x in self.ui.hashInput.text())
-        self.ui.inputBinaryText.clear()
-        self.ui.inputBinaryText.setText("0x%s" % (s.upper()))
+        # s = ''.join(hex(ord(x))[2:] for x in self.ui.hashInput.text())
+        # self.ui.inputBinaryText.clear()
+        # self.ui.inputBinaryText.setText("0x%s" % (s.upper()))
 
     def loadFileButton_Clicked(self):
         filen = QFileDialog.getOpenFileName(self, "Open File", "/home")
@@ -180,13 +198,16 @@ class AppWindow(QMainWindow):
 
         self.data = mpu.io.read("loop.json")
 
-        self.ui.blockText.clear()
-        self.ui.blockText.setText(self.data[0]["Block"])
+        self.paddingDict = self.data[0]
+
+        # self.ui.blockText.clear()
+        # self.ui.blockText.setText(self.data[0]["Block"])
 
         self.ui.progressSlider.setMaximum(len(self.data) - 1)
         self.ui.progressSlider.setEnabled(True)
         self.ui.progressSlider.setValue(1)
         self.progressSlider_Changed()
+        self.updatePaddingRegion()
 
     def randomKeyButton_Clicked(self):
         self.isTrackEnabled = False
@@ -228,7 +249,6 @@ class AppWindow(QMainWindow):
             self.updateConstantRegion(self.metadata["SHA1"])
 
     def updateConstantRegion(self, data):
-
         # load sine table from data if valid
         if "Sine Table" in data:
             self.ui.sineTable.setVisible(True)
@@ -266,22 +286,64 @@ class AppWindow(QMainWindow):
         self.ui.regDText.setText(registers["D"])
 
         if "E" in registers:
-            self.ui.blockText.setGeometry(QtCore.QRect(10, 140, 211, 101))
+            #self.ui.blockText.setGeometry(QtCore.QRect(10, 140, 211, 101))
             self.ui.label_21.setVisible(True)
             self.ui.regEText.setVisible(True)
             self.ui.regEText.setText(registers["E"])
             self.ui.label_15.setVisible(True)
             self.ui.eBufferVal.setVisible(True)
         else:
-            self.ui.blockText.setGeometry(QtCore.QRect(10, 120, 211, 121))
+            #self.ui.blockText.setGeometry(QtCore.QRect(10, 120, 211, 121))
             self.ui.label_21.setVisible(False)
             self.ui.regEText.setVisible(False)
             self.ui.label_15.setVisible(False)
             self.ui.eBufferVal.setVisible(False)
-            
+          
+    def updatePaddingRegion(self):
+        # called upon hash. 
+        # depending on index, write the correct key-value to text box
+        if self.paddingIndex == 0:
+            self.ui.padding_BlockText.setText(
+                self.paddingDict["RawBytes"]
+            )
+        elif self.paddingIndex == 1:
+            self.ui.padding_BlockText.setText(
+                self.paddingDict["RawBytes1"]
+            )
+        elif self.paddingIndex == 2:
+            self.ui.padding_BlockText.setText(
+                self.paddingDict["RawBytes0"]
+            )
+        elif self.paddingIndex == 3:
+            self.ui.padding_BlockText.setText(
+                    self.paddingDict["Block"]
+            )
+        
+        
 
+    def paddingArrow_Clicked(self, source):
+        # delta the counter
+        self.paddingIndex = self.paddingIndex + 1 if source == 1 else self.paddingIndex - 1
+        # disable/enable buttons based on current index
+        if self.paddingIndex == 0:
+            self.ui.padding_LeftArrow.setEnabled(False)
+        elif self.paddingIndex == 3:
+            self.ui.padding_RightArrow.setEnabled(False)
+        else:
+            self.ui.padding_LeftArrow.setEnabled(True)
+            self.ui.padding_RightArrow.setEnabled(True)
 
-       
+        # source is 0 or 1 dependingg on button clicked
+        labelVals = [
+            "Binary of Input",
+            "Append a \"1\" bit",
+            "Append \"0\" bits so that length in bits is congruent to 448 modulo 512",
+            "Append 64 bit representation of original message length"
+        ]
+
+        self.ui.paddingStatusLabel.setText(labelVals[self.paddingIndex])
+        self.updatePaddingRegion()
+    
 
     def cursorMoved(self, x, y):
         if len(self.vector) == 1000:

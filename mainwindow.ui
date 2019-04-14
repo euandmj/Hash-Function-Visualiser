@@ -208,29 +208,13 @@
        <property name="title">
         <string>Hash Preview</string>
        </property>
-       <widget class="QLineEdit" name="inputBinaryText">
-        <property name="geometry">
-         <rect>
-          <x>230</x>
-          <y>49</y>
-          <width>151</width>
-          <height>61</height>
-         </rect>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
        <widget class="QTableWidget" name="sineTable">
         <property name="geometry">
          <rect>
           <x>230</x>
-          <y>120</y>
+          <y>30</y>
           <width>151</width>
-          <height>121</height>
+          <height>211</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -268,19 +252,6 @@
         <attribute name="verticalHeaderVisible">
          <bool>false</bool>
         </attribute>
-       </widget>
-       <widget class="QTextEdit" name="blockText">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>140</y>
-          <width>211</width>
-          <height>101</height>
-         </rect>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
        </widget>
        <widget class="QLabel" name="label_16">
         <property name="geometry">
@@ -386,19 +357,6 @@
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="label_20">
-        <property name="geometry">
-         <rect>
-          <x>230</x>
-          <y>30</y>
-          <width>121</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Message Binary</string>
-        </property>
-       </widget>
        <widget class="QLineEdit" name="regEText">
         <property name="geometry">
          <rect>
@@ -447,6 +405,100 @@
        <property name="currentIndex">
         <number>0</number>
        </property>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Padding</string>
+        </attribute>
+        <widget class="QLabel" name="label_20">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>30</y>
+           <width>581</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Merkle Damgard construction is a method for building collision resistant functions and involves various steps to preparing raw data for the main loop. Use the arrow keys to navigate between steps.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignHCenter|Qt::AlignTop</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="padding_BlockText">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>110</y>
+           <width>641</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QToolButton" name="padding_LeftArrow">
+         <property name="geometry">
+          <rect>
+           <x>280</x>
+           <y>270</y>
+           <width>22</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="arrowType">
+          <enum>Qt::LeftArrow</enum>
+         </property>
+        </widget>
+        <widget class="QToolButton" name="padding_RightArrow">
+         <property name="geometry">
+          <rect>
+           <x>570</x>
+           <y>270</y>
+           <width>22</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="arrowType">
+          <enum>Qt::RightArrow</enum>
+         </property>
+        </widget>
+        <widget class="QLabel" name="paddingStatusLabel">
+         <property name="geometry">
+          <rect>
+           <x>310</x>
+           <y>270</y>
+           <width>251</width>
+           <height>61</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Binary of Input</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignHCenter|Qt::AlignTop</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
        <widget class="QWidget" name="tab">
         <attribute name="title">
          <string>Main Loop</string>
