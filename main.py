@@ -383,7 +383,6 @@ class AppWindow(QMainWindow):
         # reset the ui
         self.ui.mouseCaptureRegion.setTitle("")
         self.isTrackEnabled = False
-        self.ui.inputBinaryText.clear()
     
     def __del__(self):
         ps = psutil.Process()
