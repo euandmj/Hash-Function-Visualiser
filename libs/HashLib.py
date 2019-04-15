@@ -222,8 +222,8 @@ class SHA1:
         return 0
 
     def Hash(self, msg, load_from_file=False, write_to_file=True):
-        assert((msg is str) == False), "MD5 function expected bytes, received %s" % (
-            type(msg))
+        assert isinstance(
+            msg, str), "MD5 function expected string, received %s" % type(msg)
 
         if load_from_file:
             plaintext = msg
