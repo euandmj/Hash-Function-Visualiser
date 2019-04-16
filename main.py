@@ -22,10 +22,6 @@ def pretty_print(data, indent=1):
     pp = pprint.PrettyPrinter(indent=indent)
     pp.pprint(data)
 
-def foo():
-    print("foo")
-
-
 class AppWindow(QMainWindow):
     # member variables
     data = []
@@ -182,7 +178,8 @@ class AppWindow(QMainWindow):
             c.kill()
 
     def launchConversionTool(self):
-        pass
+        #os.system("python dialog.py")
+        subprocess.Popen(r"python hexConverter\dialog.py")
 
     def runHash(self, input, hash, load_file=False):
         # wait cursor

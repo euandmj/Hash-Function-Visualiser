@@ -13,8 +13,23 @@ class AppWindow(QDialog):
         super().__init__()
         
         self.ui = Ui_Dialog()
+        self.setFixedSize(400, 300)
         self.ui.setupUi(self)
         self.init_Connections()
+        
+
+        # css
+        try:            
+            with open("res\\darkorange.stylesheet.css", "r") as f:
+                qstr = f.read()
+                self.setStyleSheet(qstr)
+        except FileNotFoundError:
+            with open("darkorange.stylesheet.css", "r") as f:
+                qstr = f.read()
+                self.setStyleSheet(qstr)
+        except:
+            pass
+
 
     
 

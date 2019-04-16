@@ -19,3 +19,4 @@ compile_mainwindow.lnk
 /wpf_visual/Visualiser/Visualiser/Visualiser.csproj.user
 libs/__pycache__/HashLib.cpython-37.pyc
 /__pycache__/window.cpython-37.pyc.66017088
+*.pyc
