@@ -44,7 +44,7 @@ namespace Visualiser
 
             Image img = new Image();
             BitmapImage bmp = new BitmapImage();
-            const string title = "Auxillary Function ";
+            const string title = "Auxiliary Function ";
             // depending on i, load the correct function image
             if (i <= 19)
             {

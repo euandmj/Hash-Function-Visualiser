@@ -1,12 +1,4 @@
-converter tool
+convert tool
 export
 
-??
-add tab along main loop that shows how the block is padded, remove from constants region 
-
-message binary
-1, 0...		+
-int64(len(m))	+
-
------------------
-padded message
+more definitions in constants area

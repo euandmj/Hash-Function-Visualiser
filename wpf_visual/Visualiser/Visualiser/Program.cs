@@ -15,6 +15,10 @@ namespace Visualiser
             //var foo = new SHA1MainWindow();
             //foo.ShowDialog();
 
+#if DEBUG
+            args = new string[] { "sha1" };
+#endif
+
             if (args.Length == 0)
                 throw new NotImplementedException("launch visualiser with hash type args");
 

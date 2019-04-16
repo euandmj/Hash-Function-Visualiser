@@ -146,5 +146,10 @@
   <ItemGroup>
     <Resource Include="res\shaH.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

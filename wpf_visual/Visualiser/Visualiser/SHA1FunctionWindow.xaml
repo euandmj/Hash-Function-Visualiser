@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Visualiser"
         mc:Ignorable="d"
-        Title="FunctionWindow" Height="500" Width="750">
+        Title="FunctionWindow" Height="500" Width="750" Icon="res/icon.png">
     <Grid Background="#FF505050">
         <Grid.RowDefinitions>
             <RowDefinition Height="63*"/>
@@ -21,7 +21,7 @@
         <Label Content="B" HorizontalAlignment="Left" Margin="168,44,0,0" VerticalAlignment="Top" Height="24" Foreground="#FF418FB6" FontWeight="Bold"/>
         <Label Content="C" HorizontalAlignment="Left" Margin="168,68,0,0" VerticalAlignment="Top" Height="24" Foreground="#FFFF4444" FontWeight="Bold"/>
         <Label Content="D" HorizontalAlignment="Left" Margin="168,92,0,0" VerticalAlignment="Top" Height="24" Foreground="#FFAE9D64" FontWeight="Bold"/>
-        <Label x:Name="title" Content="Auxillary Function" HorizontalAlignment="Left" Margin="247,5,0,0" VerticalAlignment="Top" Height="45" Width="305" FontSize="22" FontWeight="Bold" Foreground="White"/>
+        <Label x:Name="title" Content="Auxiliary Function" HorizontalAlignment="Left" Margin="247,5,0,0" VerticalAlignment="Top" Height="45" Width="305" FontSize="22" FontWeight="Bold" Foreground="White"/>
         <Label Content="F" HorizontalAlignment="Left" Margin="171,10,0,0" VerticalAlignment="Top" Height="24" Grid.Row="1" Foreground="Black" FontWeight="Bold"/>
 
     </Grid>
