@@ -20,3 +20,7 @@ compile_mainwindow.lnk
 libs/__pycache__/HashLib.cpython-37.pyc
 /__pycache__/window.cpython-37.pyc.66017088
 *.pyc
+/wpf_visual/Visualiser/Visualiser/obj/Release
+/wpf_visual/Visualiser/Visualiser/bin/Release/Visualiser.pdb
+/wpf_visual/Visualiser/Visualiser/bin/Release/Visualiser.exe.config
+/wpf_visual/Visualiser/Visualiser/bin/Release/curr_loop.json
