@@ -259,52 +259,42 @@ class SHA1:
         header["RawBytes0"] = ''.join('{:b}'.format(b) for b in msg)
         
         # add length
-        msg += length.to_bytes(8, byteorder='little')
+        msg += length.to_bytes(8, byteorder='big')
         header["Block"] = ''.join('{:b}'.format(b) for b in msg)
 
         # RFC method 1
         # parse msg[i] into 16 32 bit words (512 block)
-        for W in range(0, len(msg), 64):
-            chunk = msg[W: W + 64]
+        for M in range(0, len(msg), 64):
+            W = list(unpack('>16L', msg[M:M+64]))
 
-            w = [0] * 80
             #  a. Divide M(i) into 16 words W(0), W(1), ... , W(15), where W(0)
             #   is the left-most word.
-            for i in range(16):
-                #w[i] = int.from_bytes(chunk[4*i: 4*i+4], byteorder='little')
-                w[i] = unpack(b'>I', chunk[i * 4:i * 4 + 4])[0]
+            for i in range(16, 80):
+                W.append(leftrotate((W[i-3] ^ W[i-8] ^ W[i-14] ^ W[i-16]), 1))
 
-            #   b.
-            for t in range(16, 80):
-                w[t] = leftrotate(
-                    (w[t-3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16]), 1)
+            a,b,c,d,e = H0, H1, H2, H3, H4
 
-            a, b, c, d, e = H0, H1, H2, H3, H4
-
-            for t in range(80):
-                f = self.F(t, b, c, d)
-                k = self.K(t)
-                temp = (leftrotate(a, 5) + f + e + w[t] + k) & BITMASK_8
+            for i in range(0, 80):
+                f = self.F(i, b, c, d)
+                k = self.K(i)               
 
                 # json data
                 vdata = {
-                    "i": t,
+                    "i": i,
                     "Buffers": [a, b, c, d, e],
                     "F": f,
                     "W": 0,
                     "K": k
-                }
-                e = d
-                d = c
-                c = leftrotate(b, 30)
-                b = a
-                a = temp
-
+                } 
+                
+                a, b, c, d, e = leftrotate(a, 5) + f + e + k + W[i] & BITMASK_8, \
+                    a, leftrotate(b, 30), c, d
+               
                 # final json data
                 data = {
                     "Loop": {
                         "Id": count,
-                        "Word": ''.join('{:02x}'.format(b) for b in chunk),
+                        "Word": ''.join('{:02x}'.format(b) for b in W),
                         "Buffers": [a, b, c, d, e],
                         "f": f,
                         "g": k
@@ -314,7 +304,7 @@ class SHA1:
                         "Buffers": vdata["Buffers"],
                         "BuffersNew": [a, b, c, d, e],
                         "F": vdata["F"],
-                        "W": ''.join('{:02x}'.format(b) for b in w),
+                        "W": ''.join('{:02x}'.format(b) for b in W),
                         "K:": k
                     }
                 }
@@ -334,10 +324,7 @@ class SHA1:
 
         # After processing M(n), the message digest is the 160-bit string
         # represented by the 5 words
-        # return hl.sha1(bytes(plaintext, encoding="utf-8")).hexdigest()
-        return '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)        
-        #return toHex(sum(val << (32 * i) for i, val in enumerate([H0, H1, H2, H3, H4])))
-
+        return '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)
 
 if __name__ == "__main__":
     s = SHA1()
