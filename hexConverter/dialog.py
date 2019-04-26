@@ -27,8 +27,6 @@ class AppWindow(QDialog):
             with open("darkorange.stylesheet.css", "r") as f:
                 qstr = f.read()
                 self.setStyleSheet(qstr)
-        except:
-            pass
 
 
     

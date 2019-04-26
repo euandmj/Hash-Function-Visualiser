@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Visualiser"
         mc:Ignorable="d"
-        Title="FunctionWindow" Height="500" Width="750" Icon="res/icon.png">
+        Title="FunctionWindow" Height="500" Width="750" Icon="res/icon.png" ResizeMode="NoResize">
     <Grid Background="#FF505050">
         <Grid.RowDefinitions>
             <RowDefinition Height="63*"/>

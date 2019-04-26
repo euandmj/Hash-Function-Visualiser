@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Visualiser"
         mc:Ignorable="d"
-        Title="Visualiser Loop " Height="880" Width="741" Icon="res/icon.png">
+        Title="Visualiser Loop " Height="880" Width="741" Icon="res/icon.png" ResizeMode="NoResize">
     <Grid>
         <Image HorizontalAlignment="Left" Height="871" VerticalAlignment="Top" Width="736" Margin="-1,0,-0.333,-20.333" Source="res/sha1_vertical.png" Stretch="Fill"/>
 

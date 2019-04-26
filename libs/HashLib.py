@@ -4,6 +4,7 @@ import os
 import psutil
 import mpu.io
 from struct import unpack
+import hashlib as hl
 
 BITMASK_8 = 0xFFFFFFFF
 BITMASK_32 = 0xFFFFFFFFFFFFFFFF
@@ -329,20 +330,13 @@ class SHA1:
         self.json_data.insert(0, header)
         # write the json
         if write_to_file:
-            self.writeJsonFile()
-
-        # It was also shown that for the rounds 32–79 the computation of:
-        # w[i] = (w[i-3] xor w[i-8] xor w[i-14] xor w[i-16]) leftrotate 1
-        # can be replaced with:
-        # w[i] = (w[i-6] xor w[i-16] xor w[i-28] xor w[i-32]) leftrotate 2
-        # This transformation keeps all operands 64-bit aligned and,
-        # by removing the dependency of w[i] on w[i-3],
-        # allows efficient SIMD implementation with a vector length of 4 like x86 SSE instructions.
+            self.writeJsonFile()        
 
         # After processing M(n), the message digest is the 160-bit string
         # represented by the 5 words
-        return '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)
-        # return toHex(sum(val << (32 * i) for i, val in enumerate([H0, H1, H2, H3, H4])))
+        # return hl.sha1(bytes(plaintext, encoding="utf-8")).hexdigest()
+        return '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)        
+        #return toHex(sum(val << (32 * i) for i, val in enumerate([H0, H1, H2, H3, H4])))
 
 
 if __name__ == "__main__":

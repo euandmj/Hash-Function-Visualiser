@@ -3,7 +3,8 @@ import os
 import mpu.io
 import psutil
 import subprocess
-import mpu.io
+import datetime
+from numpy import sin, sum
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QFileDialog, QHeaderView, QTableWidgetItem
 from window import Ui_MainWindow
@@ -109,6 +110,7 @@ class AppWindow(QMainWindow):
             return "sha1"
 
     def hashButton_Clicked(self):
+        self.ui.launchVisualiserButton.setEnabled(True)        
         #read in the text and send the ascii encoded byte array to the md5 function
         msg = str(self.ui.hashInput.text())
         # msg = bytes(msg, encoding="utf-8")
@@ -246,6 +248,8 @@ class AppWindow(QMainWindow):
             # sha1 chosen
             self.updateConstantRegion(self.metadata["SHA1"])
 
+        self.ui.launchVisualiserButton.setEnabled(False)
+
     def updateConstantRegion(self, data):
         # load sine table from data if valid
         if "Sine Table" in data:
@@ -350,8 +354,8 @@ class AppWindow(QMainWindow):
         # source is 0 or 1 dependingg on button clicked
         labelVals = [
             "Binary of Input",
-            "Append a \"1\" bit",
-            "Append \"0\" bits so that length in bits is congruent to 448 modulo 512",
+            "Append a \"1\" byte",
+            "Append \"0\" bytes so that length in bits is congruent to 448 modulo 512",
             "Append 64 bit representation of original message length"
         ]
 
@@ -371,12 +375,13 @@ class AppWindow(QMainWindow):
     def mouse_vector_acquired(self):
         # called when 1000 mouse points have been collected
         # will change the input hash to a string the sum of all points
+        
 
-        sum = 0
-        for i in range(len(self.vector)):
-            sum += self.vector[i][0] + self.vector[i][1]
+        _sum = sum(self.vector)
+        now = datetime.datetime.now()
+        val = _sum * sin(now.day + now.hour + now.second)
 
-        self.runHash(str(sum), MD5())
+        self.runHash(str(val), MD5())
         # reset the ui
         self.ui.mouseCaptureRegion.setTitle("")
         self.isTrackEnabled = False
