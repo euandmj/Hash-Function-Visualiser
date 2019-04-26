@@ -4,7 +4,6 @@ import os
 import psutil
 import mpu.io
 from struct import unpack
-import hashlib as hl
 
 BITMASK_8 = 0xFFFFFFFF
 BITMASK_32 = 0xFFFFFFFFFFFFFFFF
@@ -160,7 +159,7 @@ class MD5:
                         "BuffersNew": [A, B, C, D],
                         "F": vdata["F"],
                         "M": M,
-                        "S": rota,
+                        "S": self.rotate_amounts[i],
                         "T": self.T[i]
                     }
                 }
@@ -304,8 +303,8 @@ class SHA1:
                         "Buffers": vdata["Buffers"],
                         "BuffersNew": [a, b, c, d, e],
                         "F": vdata["F"],
-                        "W": ''.join('{:02x}'.format(b) for b in W),
-                        "K:": k
+                        "W": W[i],
+                        "K": k
                     }
                 }
                 self.json_data.append(data)

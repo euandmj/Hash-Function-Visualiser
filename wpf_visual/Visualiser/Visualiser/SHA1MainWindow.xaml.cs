@@ -23,7 +23,7 @@ namespace Visualiser
         public Int64[] BuffersNew;
         public Int64 F;
         public Int64 K;
-        public string W;
+        public Int64 W;
         public int I;
 
 
@@ -75,6 +75,8 @@ namespace Visualiser
             BufferD_Copy.Text = Loop.GetNewBuffer(3);
             BufferE_Copy.Text = Loop.GetNewBuffer(4);
 
+            K.Text = Loop.K.ToString();
+            M.Text = Loop.W.ToString();
         }
 
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)

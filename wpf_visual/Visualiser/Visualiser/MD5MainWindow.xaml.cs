@@ -74,22 +74,16 @@ namespace Visualiser
             BufferC_Copy.Text = Loop.GetNewBuffer(2);
             BufferD_Copy.Text = Loop.GetNewBuffer(3);
 
+            M.Text = Loop.M.ToString();
+            K.Text = Loop.T.ToString();
+            S.Text = "<< " + Loop.S.ToString();
+
         }
 
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             MD5FunctionWindow window = new MD5FunctionWindow(Loop.I, Loop.Buffers, Loop.F);
             window.ShowDialog();
-        }
-
-        private void Mblock_click_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            MessageBox.Show(Loop.M.ToString());
-        }
-
-        private void Tblock_click_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            MessageBox.Show(Loop.T.ToString());
         }
     }
 }
