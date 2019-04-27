@@ -81,6 +81,7 @@ class AppWindow(QMainWindow):
 
         # disable all the tab control
         self.ui.sineTable.setTabKeyNavigation(False)
+        self.ui.exportButton.setEnabled(False)
 
 
     def eventFilter(self, source, event):
@@ -129,11 +130,6 @@ class AppWindow(QMainWindow):
             m = SHA1()
         
         self.runHash(msg, m)
-        # set input binary text field
-        #s = ''.join("{:02x}".format(ord(x)) for x in txt)
-        # s = ''.join(hex(ord(x))[2:] for x in self.ui.hashInput.text())
-        # self.ui.inputBinaryText.clear()
-        # self.ui.inputBinaryText.setText("0x%s" % (s.upper()))
 
     def loadFileButton_Clicked(self):
         filen = QFileDialog.getOpenFileName(self, "Open File", "/home")
@@ -147,7 +143,17 @@ class AppWindow(QMainWindow):
             self.runHash(filen[0], h, load_file=True)
 
     def exportButton_Clicked(self):
-        pass    
+        if not self.data:
+            return
+        # write json of current header
+        now = datetime.datetime.now()
+        val = "%s_%s_%s_%s_%s.json" % (now.year, now.day, now.hour, now.minute, now.second)
+
+        newData = {}
+        newData["Hash Function"] = self.getSelectedHash()
+        newData["Message"] = self.data[0]["Message"]
+        newData["Result"] = self.ui.outputText.text()
+        mpu.io.write(val, newData)
 
     def launchVisualTab(self):
         # if the current system is not windows....
@@ -191,7 +197,8 @@ class AppWindow(QMainWindow):
 
     def runHash(self, input, hash, load_file=False):
         # re-enable button. prevents wrong data crash
-        self.ui.launchVisualiserButton.setEnabled(True)     
+        self.ui.launchVisualiserButton.setEnabled(True)
+        self.ui.exportButton.setEnabled(True)
         QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
 
         # first reset the ui

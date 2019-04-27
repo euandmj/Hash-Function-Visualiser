@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'mainwindow.ui'
+# Form implementation generated from reading ui file 'I:\Documents\Uni\year 3\diss\pyMD5\mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.3
 #
@@ -134,6 +134,7 @@ class Ui_MainWindow(object):
         self.label_19.setObjectName("label_19")
         self.regAText = QtWidgets.QLineEdit(self.groupBox)
         self.regAText.setGeometry(QtCore.QRect(70, 50, 121, 20))
+        self.regAText.setFrame(True)
         self.regAText.setReadOnly(True)
         self.regAText.setObjectName("regAText")
         self.regBText = QtWidgets.QLineEdit(self.groupBox)
@@ -386,7 +387,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 904, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 904, 17))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
