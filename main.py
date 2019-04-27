@@ -8,6 +8,7 @@ from numpy import sin, sum
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QFileDialog, QHeaderView, QTableWidgetItem
 from window import Ui_MainWindow
+import libs.HashLib
 from libs.HashLib import MD5, SHA1
 
 def openFile(file, args):
@@ -78,6 +79,9 @@ class AppWindow(QMainWindow):
         self.ui.padding_LeftArrow.setEnabled(False)
         self.ui.tabWidget.setCurrentIndex(1)
 
+        # disable all the tab control
+        self.ui.sineTable.setTabKeyNavigation(False)
+
 
     def eventFilter(self, source, event):
         # event filter for a mouse movement over the mouse capture region
@@ -100,8 +104,11 @@ class AppWindow(QMainWindow):
                     self.ui.padding_RightArrow.isEnabled()):
                 self.paddingArrow_Clicked(1)
 
-
         return QMainWindow.eventFilter(self, source, event)
+
+    def keyPressEvent(self, qKeyEvent):
+        if qKeyEvent.key() == QtCore.Qt.Key_Return:
+            self.hashButton_Clicked()
 
     def getSelectedHash(self):
         if self.ui.hashCombo.currentIndex() == 0:
@@ -109,8 +116,7 @@ class AppWindow(QMainWindow):
         else:
             return "sha1"
 
-    def hashButton_Clicked(self):
-        self.ui.launchVisualiserButton.setEnabled(True)        
+    def hashButton_Clicked(self):    
         #read in the text and send the ascii encoded byte array to the md5 function
         msg = str(self.ui.hashInput.text())
         # msg = bytes(msg, encoding="utf-8")
@@ -184,7 +190,8 @@ class AppWindow(QMainWindow):
         subprocess.Popen(r"python hexConverter\dialog.py")
 
     def runHash(self, input, hash, load_file=False):
-        # wait cursor
+        # re-enable button. prevents wrong data crash
+        self.ui.launchVisualiserButton.setEnabled(True)    
 
         # first reset the ui
         # feed a string and run it through the hash and
@@ -193,7 +200,13 @@ class AppWindow(QMainWindow):
         # clear the data struct
         self.data.clear()
 
-        h = hash.Hash(input, load_from_file=load_file)
+        if load_file:
+            _bytes = libs.HashLib.loadFromFile(input)
+        else:
+            _bytes = bytes(input, encoding="utf-8")
+
+        h = hash.Hash(_bytes)
+        
         self.ui.outputText.setText(h.upper())
 
         self.data = mpu.io.read("loop.json")

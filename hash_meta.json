@@ -2,7 +2,7 @@
     "MD5":{
         "Digest": "128 bit",
         "Block": "512 bit",
-        "Rounds": "4",
+        "Rounds": "64",
         "Registers":{
             "A": "0x67452301",
             "B": "0xefcdab89",

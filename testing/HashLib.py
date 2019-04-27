@@ -46,7 +46,7 @@ class MD5:
     def Hash(self, msg):
 
         # load the file using the msg as directory
-        #msg = loadFromFile(msg)
+        msg = loadFromFile(msg)
 
        
 
@@ -134,7 +134,6 @@ class SHA1:
         self.H3 = 0x10325476
         self.H4 = 0xC3D2E1F0
     
-
     def F(self, t, B, C, D):
         if 0 <= t <= 19:
             return (B & C) | (~B & D)
@@ -157,7 +156,7 @@ class SHA1:
 
     def Hash(self, msg):       
         assert((msg is bytes) == False)
-        #msg = loadFromFile(msg)
+        msg = loadFromFile(msg)
         plaintext = msg
      
         H0 = self.H0

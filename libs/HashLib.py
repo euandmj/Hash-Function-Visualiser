@@ -52,18 +52,21 @@ class MD5:
             os.remove(filepath)
         mpu.io.write(filepath, data)
 
-    def Hash(self, msg, load_from_file=False, write_to_file=True):
+    def Hash(self, msg, write_to_file=True):
         assert isinstance(
-            msg, str), "MD5 function expected string, received %s" % type(msg)
+            msg, bytes), "MD5 function expected bytes, received %s" % type(msg)
 
-        if load_from_file:
-            plaintext = msg
-            # load the file using the msg as directory
-            msg = loadFromFile(msg)
-        else:
-            # parse ascii to bytes
-            plaintext = msg
-            msg = bytes(msg, encoding="utf-8")
+        # if load_from_file:
+        #     plaintext = msg
+        #     # load the file using the msg as directory
+        #     msg = loadFromFile(msg)
+        # else:
+        #     # parse ascii to bytes
+        #     plaintext = msg
+        #     msg = bytes(msg, encoding="utf-8")
+
+
+        plaintext = msg.decode("utf-8")
 
         self.json_data.clear()
         header = {}
@@ -221,18 +224,25 @@ class SHA1:
         print("Error sha1 K func overflow")
         return 0
 
-    def Hash(self, msg, load_from_file=False, write_to_file=True):
+    def Hash(self, msg, write_to_file=True):
         assert isinstance(
-            msg, str), "MD5 function expected string, received %s" % type(msg)
+            msg, bytes), "SHA1 function expected bytes, received %s" % type(msg)
 
-        if load_from_file:
-            plaintext = msg
-            # load the file using the msg as directory
-            msg = loadFromFile(msg[0])
-        else:
-            # parse ascii to bytes
-            plaintext = msg
-            msg = bytes(msg, encoding="utf-8")
+
+        # plaintext is the decoded msg
+        plaintext = msg.decode("utf-8")
+
+
+        # if load_from_file:
+        #     plaintext = msg
+        #     # load the file using the msg as directory
+        #     msg = loadFromFile(msg[0])
+        # else:
+        #     # parse ascii to bytes
+        #     plaintext = msg
+        #     msg = bytes(msg, encoding="utf-8")
+
+
         header = {}
         H0 = self.H0
         H1 = self.H1

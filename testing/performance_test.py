@@ -3,7 +3,7 @@ import HashLib
 import psutil
 
 def test(file):    
-    m = HashLib.SHA1()
+    m = HashLib.MD5()
     m.Hash(file)
     # print(o)
 
@@ -25,7 +25,7 @@ print(psutil.cpu_percent())
 
 t1 = Timer("""test("t_10000k")""", """from __main__ import test""")
 print("10000k: %s" % t1.timeit(1))
-print(psutil.cpu_percent())
+#print(psutil.cpu_percent())
 
 # t1 = Timer("""test("t_100000k")""", """from __main__ import test""")
 # print("100000k: %s" % t1.timeit(1))

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'I:\Documents\Uni\year 3\diss\pyMD5\mainwindow.ui'
+# Form implementation generated from reading ui file 'mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.3
 #
@@ -53,7 +53,7 @@ class Ui_MainWindow(object):
         self.hashInput.setText("")
         self.hashInput.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.hashInput.setDragEnabled(True)
-        self.hashInput.setClearButtonEnabled(True)
+        self.hashInput.setClearButtonEnabled(False)
         self.hashInput.setObjectName("hashInput")
         self.loadFileButton = QtWidgets.QPushButton(self.mouseCaptureRegion)
         self.loadFileButton.setGeometry(QtCore.QRect(120, 210, 101, 20))
@@ -101,6 +101,7 @@ class Ui_MainWindow(object):
         self.sineTable.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.sineTable.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.sineTable.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContentsOnFirstShow)
+        self.sineTable.setTabKeyNavigation(False)
         self.sineTable.setObjectName("sineTable")
         self.sineTable.setColumnCount(0)
         self.sineTable.setRowCount(0)
@@ -305,7 +306,7 @@ class Ui_MainWindow(object):
         self.loopCountLabel_2.setGeometry(QtCore.QRect(30, 20, 201, 16))
         self.loopCountLabel_2.setObjectName("loopCountLabel_2")
         self.layoutWidget1 = QtWidgets.QWidget(self.tab)
-        self.layoutWidget1.setGeometry(QtCore.QRect(160, 100, 311, 142))
+        self.layoutWidget1.setGeometry(QtCore.QRect(160, 100, 311, 146))
         self.layoutWidget1.setObjectName("layoutWidget1")
         self.formLayout = QtWidgets.QFormLayout(self.layoutWidget1)
         self.formLayout.setContentsMargins(0, 0, 0, 0)
@@ -385,7 +386,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 904, 17))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 904, 22))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
