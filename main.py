@@ -187,11 +187,12 @@ class AppWindow(QMainWindow):
 
     def launchConversionTool(self):
         #os.system("python dialog.py")
-        subprocess.Popen(r"python hexConverter\dialog.py")
+        subprocess.Popen(r"python dialog.py")
 
     def runHash(self, input, hash, load_file=False):
         # re-enable button. prevents wrong data crash
-        self.ui.launchVisualiserButton.setEnabled(True)    
+        self.ui.launchVisualiserButton.setEnabled(True)     
+        QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
 
         # first reset the ui
         # feed a string and run it through the hash and
@@ -221,6 +222,7 @@ class AppWindow(QMainWindow):
         self.ui.progressSlider.setValue(1)
         self.progressSlider_Changed()
         self.updatePaddingRegion()
+        QApplication.restoreOverrideCursor()
 
     def randomKeyButton_Clicked(self):
         self.isTrackEnabled = False

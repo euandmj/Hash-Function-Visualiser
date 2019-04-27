@@ -19,9 +19,13 @@ class AppWindow(QDialog):
         
 
         # css
-        with open("res/darkorange.stylesheet.css", "r") as f:
-            qstr = f.read()
-            self.setStyleSheet(qstr)
+        try:            
+            with open("res\\darkorange.stylesheet.css", "r") as f:
+                qstr = f.read()
+                self.setStyleSheet(qstr)
+        except FileNotFoundError:
+            pass
+
 
     
 
