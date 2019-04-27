@@ -299,6 +299,12 @@ class AppWindow(QMainWindow):
         self.ui.regCText.setText(registers["C"])
         self.ui.regDText.setText(registers["D"])
 
+        # block size etc
+        self.ui.digestSizeLabel_2.setText(data["Digest"])
+        self.ui.digestSizeLabel_3.setText(data["Block"])
+        self.ui.digestSizeLabel_4.setText(data["Rounds"])
+
+
         if "E" in registers:
             #self.ui.blockText.setGeometry(QtCore.QRect(10, 140, 211, 101))
             self.ui.label_21.setVisible(True)
