@@ -136,8 +136,6 @@
     <Resource Include="res\I.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="res\md5_vertical.png" />
-    <Resource Include="res\sha1_vertical.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="res\shaF.png" />
