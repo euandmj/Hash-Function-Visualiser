@@ -181,8 +181,8 @@ class AppWindow(QMainWindow):
             os.remove(filen)
         mpu.io.write(filen, visualdata)
 
-        #subprocess.Popen(["wpf_visual\Visualiser\Visualiser\\bin\Debug\Visualiser.exe", self.getSelectedHash()])
         openFile("wpf_visual\Visualiser\Visualiser\\bin\Release\Visualiser.exe", self.getSelectedHash())
+        
     
     def killChildPs(self):
         ps = psutil.Process()

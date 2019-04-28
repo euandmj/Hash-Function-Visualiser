@@ -336,6 +336,7 @@ class SHA1:
         return '%08x%08x%08x%08x%08x' % (H0, H1, H2, H3, H4)
 
 if __name__ == "__main__":
-    s = SHA1()
-    b = s.Hash("foo", write_to_file=False)
-    print(b)
+    # s = SHA1()
+    # b = s.Hash("foo", write_to_file=False)
+    # print(b)
+    pass

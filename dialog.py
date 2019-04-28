@@ -16,6 +16,7 @@ class AppWindow(QDialog):
         self.setFixedSize(400, 300)
         self.ui.setupUi(self)
         self.init_Connections()
+        self.ui.tabWidget.setCurrentIndex(0)
         
 
         # css
@@ -24,7 +25,9 @@ class AppWindow(QDialog):
                 qstr = f.read()
                 self.setStyleSheet(qstr)
         except FileNotFoundError:
-            pass
+            with open("darkorange.stylesheet.css", "r") as f:
+                qstr = f.read()
+                self.setStyleSheet(qstr)
 
 
     
@@ -32,6 +35,7 @@ class AppWindow(QDialog):
     def init_Connections(self):
         self.ui.hexInputText.textChanged.connect(self.hexTextChanged)
         self.ui.decInputText.textChanged.connect(self.decTextChanged)
+        self.ui.binInputText.textChanged.connect(self.binTextChanged)
 
     
 
@@ -45,8 +49,8 @@ class AppWindow(QDialog):
         except (ValueError, TypeError) as e:
             #print(e)
             self.ui.hexInputText.setStyleSheet("border: 1px solid red")
-        except Exception:
-            pass
+        except Exception as e:
+            print(e)
         else:
             self.ui.hexInputText.setStyleSheet("border: 1px solid black")
 
@@ -57,8 +61,8 @@ class AppWindow(QDialog):
             self.ui.hexResultBin.setText(str(b))
         except (ValueError, TypeError) as e:
             self.ui.hexInputText.setStyleSheet("border: 1px solid red")
-        except Exception:
-            pass
+        except Exception as e:
+            print(e)
         else:
             self.ui.hexInputText.setStyleSheet("border: 1px solid black")
 
@@ -71,6 +75,8 @@ class AppWindow(QDialog):
             value = int(input)
         except ValueError as e:
             self.ui.decInputText.setStyleSheet("border: 1px solid red")
+        except Exception as e:
+            print(e)
         else:
             # to hex
             h = hex(value)
@@ -83,8 +89,26 @@ class AppWindow(QDialog):
             self.ui.decInputText.setStyleSheet("border: 1px solid black")
 
 
+    def binTextChanged(self):
+        input = self.ui.binInputText.text()
+        # to dec
+        try:
+            _int = int(input, 2)
 
-        # to binary
+            # as hex
+            _hex = int(input, 16)
+            self.ui.hexResultDec_2.setText(str(_hex))
+            
+            #as dec
+            self.ui.hexResultBin_2.setText(str(_int))
+
+        except(ValueError, TypeError):
+            self.ui.binInputText.setStyleSheet("border: 1px solid red")
+        except Exception as e:
+            print(e)
+        else:
+            self.ui.hexInputText.setStyleSheet("border: 1px solid black")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
