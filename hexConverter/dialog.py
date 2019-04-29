@@ -41,30 +41,24 @@ class AppWindow(QDialog):
 
     def hexTextChanged(self):
         input = self.ui.hexInputText.text()
-        
-        # to dec
+       
         try:
-            hex = int(input, 16)
-            self.ui.hexResultDec.setText(str(hex))
+            _hex = int(input, 16)
         except (ValueError, TypeError) as e:
             #print(e)
             self.ui.hexInputText.setStyleSheet("border: 1px solid red")
         except Exception as e:
             print(e)
-        else:
-            self.ui.hexInputText.setStyleSheet("border: 1px solid black")
+        else: 
+            # to dec
+            self.ui.hexResultDec.setText(str(_hex))
 
-        
-        # to binary
-        try:
-            b = bin(hex)[2:]
+            # to binary
+            b = bin(_hex)[2:]
             self.ui.hexResultBin.setText(str(b))
-        except (ValueError, TypeError) as e:
-            self.ui.hexInputText.setStyleSheet("border: 1px solid red")
-        except Exception as e:
-            print(e)
-        else:
+
             self.ui.hexInputText.setStyleSheet("border: 1px solid black")
+        
 
     def decTextChanged(self):
         input = self.ui.decInputText.text()
@@ -93,21 +87,20 @@ class AppWindow(QDialog):
         input = self.ui.binInputText.text()
         # to dec
         try:
-            _int = int(input, 2)
-
-            # as hex
-            _hex = int(input, 16)
-            self.ui.hexResultDec_2.setText(str(_hex))
-            
-            #as dec
-            self.ui.hexResultBin_2.setText(str(_int))
+            _int = int(input, 2)           
 
         except(ValueError, TypeError):
             self.ui.binInputText.setStyleSheet("border: 1px solid red")
         except Exception as e:
             print(e)
         else:
-            self.ui.hexInputText.setStyleSheet("border: 1px solid black")
+            #as dec
+            self.ui.bin_decResult.setText(str(_int))
+
+            # as hex
+            _hex = hex(_int)
+            self.ui.bin_hexResult.setText(str(_hex))
+            self.ui.binInputText.setStyleSheet("border: 1px solid black")
 
 
 if __name__ == "__main__":
